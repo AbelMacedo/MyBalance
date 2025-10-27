@@ -1,0 +1,167 @@
+ion-content {
+  --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.login-container {
+  max-width: 400px;
+  margin: 0 auto;
+  padding-top: 40px;
+}
+
+.logo-section {
+  text-align: center;
+  margin-bottom: 40px;
+
+  ion-icon {
+    font-size: 80px;
+    margin-bottom: 10px;
+    color: white; /* icono visible */
+  }
+
+  h1 {
+    color: white;
+    font-size: 32px;
+    font-weight: bold;
+    margin: 10px 0;
+  }
+
+  p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 14px;
+  }
+}
+
+ion-item {
+  --background: white;
+  --border-radius: 10px;
+  margin-bottom: 15px;
+  --padding-start: 15px;
+
+  ion-icon {
+    margin-right: 10px;
+    color: #667eea;
+  }
+
+  ion-input,
+  ion-label {
+    color: #333; /* texto oscuro sobre fondo blanco */
+  }
+
+  ion-input::placeholder {
+    color: #999; /* placeholder gris */
+  }
+}
+
+.error-message {
+  color: #ff6b6b;
+  font-size: 12px;
+  margin: -10px 0 10px 15px;
+  background: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+.error-message-box {
+  background: rgba(255, 107, 107, 0.1);
+  border: 1px solid #ff6b6b;
+  border-radius: 8px;
+  padding: 12px;
+  margin: 15px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  ion-icon {
+    font-size: 20px;
+  }
+}
+
+.login-button {
+  margin-top: 25px;
+  --background: white;
+  --color: #667eea;
+  font-weight: bold;
+  height: 50px;
+  --border-radius: 25px;
+}
+
+.forgot-password {
+  text-align: center;
+  margin-top: 10px;
+
+  ion-button {
+    --color: white;
+    text-transform: none;
+  }
+}
+
+.divider {
+  text-align: center;
+  margin: 30px 0;
+  position: relative;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 40%;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  &::before {
+    left: 0;
+  }
+
+  &::after {
+    right: 0;
+  }
+
+  span {
+    color: white;
+    background: transparent;
+    padding: 0 15px;
+    font-size: 14px;
+  }
+}
+
+.register-section {
+  text-align: center;
+
+  p {
+    color: white;
+    margin-bottom: 15px;
+  }
+
+  ion-button {
+    --border-color: white;
+    --color: white;
+    --border-width: 2px;
+    height: 50px;
+    --border-radius: 25px;
+    font-weight: bold;
+  }
+}
+
+/* Inputs y labels de formularios de registro también legibles */
+.register-container ion-item ion-input,
+.register-container ion-item ion-label {
+  color: #333;
+}
+
+.register-container ion-input::placeholder {
+  color: #999;
+}
+
+/* Alertas de error de formulario */
+.register-container .error-message,
+.login-container .error-message {
+  background: #fff;
+  color: #ff6b6b;
+}
+
+/* Spinner color */
+ion-spinner {
+  --color: #667eea;
+}

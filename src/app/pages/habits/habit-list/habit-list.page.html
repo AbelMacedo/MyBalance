@@ -1,0 +1,148 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Mis Hábitos</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="openFilterMenu()">
+        <ion-icon name="filter-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <!-- Segmento de filtros -->
+  <ion-toolbar>
+    <ion-segment [(ngModel)]="filterSegment" (ionChange)="onFilterChange()">
+      <ion-segment-button value="all">
+        <ion-label>Todos</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="today">
+        <ion-label>Hoy</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="paused">
+        <ion-label>Pausados</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="loading-container">
+    <ion-spinner color="primary"></ion-spinner>
+    <p>Cargando hábitos...</p>
+  </div>
+
+  <!-- Lista vacía -->
+  <div *ngIf="!isLoading && filteredHabits.length === 0" class="empty-state">
+    <ion-icon name="leaf-outline" color="medium"></ion-icon>
+    <h2>No tienes hábitos</h2>
+    <p>Comienza creando tu primer hábito para mejorar tu día a día</p>
+    <ion-button expand="block" (click)="goToCreate()">
+      <ion-icon name="add-circle-outline" slot="start"></ion-icon>
+      Crear mi primer hábito
+    </ion-button>
+  </div>
+
+  <!-- Lista de hábitos -->
+  <div *ngIf="!isLoading && filteredHabits.length > 0">
+
+    <!-- Resumen del día -->
+    <ion-card class="summary-card" *ngIf="filterSegment === 'today'">
+      <ion-card-content>
+        <div class="summary-content">
+          <div class="summary-item">
+            <h3>{{ completedToday }}</h3>
+            <p>Completados</p>
+          </div>
+          <div class="summary-divider"></div>
+          <div class="summary-item">
+            <h3>{{ filteredHabits.length }}</h3>
+            <p>Total del día</p>
+          </div>
+          <div class="summary-divider"></div>
+          <div class="summary-item">
+            <h3>{{ completionPercentage }}%</h3>
+            <p>Progreso</p>
+          </div>
+        </div>
+        <ion-progress-bar
+          [value]="completionPercentage / 100"
+          color="success">
+        </ion-progress-bar>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Tarjetas de hábitos -->
+    <ion-card
+      *ngFor="let habit of filteredHabits"
+      class="habit-card"
+      [class.completed]="isHabitCompletedToday(habit)"
+      [class.paused]="habit.is_paused"
+      (click)="goToDetail(habit.id)">
+
+      <ion-card-content>
+        <div class="habit-header">
+          <div class="habit-icon" [style.background]="habit.category_color || '#6c63ff'">
+            <ion-icon [name]="habit.icon"></ion-icon>
+          </div>
+
+          <div class="habit-info">
+            <h3>{{ habit.name }}</h3>
+            <p class="habit-category">
+              <ion-icon [name]="habit.category_icon || 'pricetag'"></ion-icon>
+              {{ habit.category_name || 'Sin categoría' }}
+            </p>
+          </div>
+
+          <div class="habit-actions">
+            <ion-badge
+              [color]="getPriorityColor(habit.priority)">
+              {{ habit.priority | uppercase }}
+            </ion-badge>
+          </div>
+        </div>
+
+        <div class="habit-details">
+          <div class="detail-item">
+            <ion-icon name="flame" color="warning"></ion-icon>
+            <span>{{ habit.current_streak || 0 }} días</span>
+          </div>
+          <div class="detail-item">
+            <ion-icon name="calendar" color="primary"></ion-icon>
+            <span>{{ getFrequencyText(habit.frequency) }}</span>
+          </div>
+        </div>
+
+        <!-- Botón de completar -->
+        <ion-button
+          expand="block"
+          [color]="isHabitCompletedToday(habit) ? 'success' : 'primary'"
+          (click)="toggleComplete(habit, $event)"
+          [disabled]="habit.is_paused">
+          <ion-icon
+            [name]="isHabitCompletedToday(habit) ? 'checkmark-circle' : 'checkmark-circle-outline'"
+            slot="start">
+          </ion-icon>
+          {{ isHabitCompletedToday(habit) ? 'Completado' : 'Marcar como completado' }}
+        </ion-button>
+
+        <!-- Indicador de pausa -->
+        <div *ngIf="habit.is_paused" class="paused-indicator">
+          <ion-icon name="pause-circle"></ion-icon>
+          <span>Hábito pausado</span>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- FAB para crear hábito -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="goToCreate()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+</ion-content>

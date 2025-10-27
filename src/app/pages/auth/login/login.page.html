@@ -1,0 +1,80 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title>Iniciar Sesión</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <div class="login-container">
+    <div class="logo-section">
+      <ion-icon name="heart-circle" color="primary"></ion-icon>
+      <h1>Mi Balance</h1>
+      <p>Tu equilibrio personal en una app</p>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+
+      <ion-item lines="full">
+        <ion-icon name="mail-outline" slot="start"></ion-icon>
+        <ion-input type="email" placeholder="Correo electrónico" formControlName="email"
+          [class.ion-invalid]="isSubmitted && loginForm.get('email')?.invalid"></ion-input>
+      </ion-item>
+      <div class="error-message" *ngIf="isSubmitted && loginForm.get('email')?.hasError('required')">
+        El email es obligatorio
+      </div>
+      <div class="error-message" *ngIf="isSubmitted && loginForm.get('email')?.hasError('email')">
+        Ingresa un email válido
+      </div>
+
+      <ion-item lines="full">
+        <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+        <ion-input [type]="showPassword ? 'text' : 'password'" placeholder="Contraseña" formControlName="password"
+          [class.ion-invalid]="isSubmitted && loginForm.get('password')?.invalid"></ion-input>
+        <ion-button fill="clear" slot="end" (click)="togglePassword()">
+          <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'" slot="icon-only">
+          </ion-icon>
+        </ion-button>
+      </ion-item>
+      <div class="error-message" *ngIf="isSubmitted && loginForm.get('password')?.hasError('required')">
+        La contraseña es obligatoria
+      </div>
+
+      <ion-item lines="none">
+        <ion-checkbox formControlName="rememberMe" slot="start">
+        </ion-checkbox>
+        <ion-label>Recordar sesión</ion-label>
+      </ion-item>
+
+      <ion-text color="danger" *ngIf="errorMessage">
+        <p class="error-message-box">
+          <ion-icon name="alert-circle-outline"></ion-icon>
+          {{ errorMessage }}
+        </p>
+      </ion-text>
+
+      <ion-button expand="block" type="submit" [disabled]="isLoading" class="login-button">
+        <ion-spinner name="crescent" *ngIf="isLoading"></ion-spinner>
+        <span *ngIf="!isLoading">Iniciar Sesión</span>
+      </ion-button>
+
+      <div class="forgot-password">
+        <ion-button fill="clear" size="small" routerLink="/forgot-password">
+          ¿Olvidaste tu contraseña?
+        </ion-button>
+      </div>
+
+    </form>
+
+    <div class="divider">
+      <span>o</span>
+    </div>
+
+    <div class="register-section">
+      <p>¿No tienes una cuenta?</p>
+      <ion-button expand="block" fill="outline" routerLink="/register">
+        Crear cuenta
+      </ion-button>
+    </div>
+
+  </div>
+</ion-content>

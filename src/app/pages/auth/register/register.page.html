@@ -1,0 +1,110 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/login"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Crear Cuenta</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <div class="register-container">
+
+    <div class="header-section">
+      <ion-icon name="person-add-outline" color="primary"></ion-icon>
+      <h2>¡Únete a Mi Balance!</h2>
+      <p>Crea tu cuenta y comienza tu viaje hacia el equilibrio personal</p>
+    </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
+
+      <ion-item lines="full">
+        <ion-icon name="person-outline" slot="start"></ion-icon>
+        <ion-input type="text" placeholder="Nombre completo" formControlName="full_name"
+          [class.ion-invalid]="isSubmitted && registerForm.get('full_name')?.invalid"></ion-input>
+      </ion-item>
+      <div class="error-message" *ngIf="isSubmitted && registerForm.get('full_name')?.hasError('required')">
+        El nombre es obligatorio
+      </div>
+
+      <ion-item lines="full">
+        <ion-icon name="mail-outline" slot="start"></ion-icon>
+        <ion-input type="email" placeholder="Correo electrónico" formControlName="email"
+          [class.ion-invalid]="isSubmitted && registerForm.get('email')?.invalid"></ion-input>
+      </ion-item>
+      <div class="error-message" *ngIf="isSubmitted && registerForm.get('email')?.hasError('required')">
+        El email es obligatorio
+      </div>
+      <div class="error-message" *ngIf="isSubmitted && registerForm.get('email')?.hasError('email')">
+        Ingresa un email válido
+      </div>
+
+      <ion-item lines="full">
+        <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+        <ion-input [type]="showPassword ? 'text' : 'password'" placeholder="Contraseña (mín. 8 caracteres)"
+          formControlName="password"
+          [class.ion-invalid]="isSubmitted && registerForm.get('password')?.invalid"></ion-input>
+        <ion-button fill="clear" slot="end" (click)="togglePassword()">
+          <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'" slot="icon-only">
+          </ion-icon>
+        </ion-button>
+      </ion-item>
+      <div class="error-message" *ngIf="isSubmitted && registerForm.get('password')?.hasError('required')">
+        La contraseña es obligatoria
+      </div>
+      <div class="error-message" *ngIf="isSubmitted && registerForm.get('password')?.hasError('minlength')">
+        La contraseña debe tener al menos 8 caracteres
+      </div>
+
+      <ion-item lines="full">
+        <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+        <ion-input [type]="showConfirmPassword ? 'text' : 'password'" placeholder="Confirmar contraseña"
+          formControlName="password_confirmation"
+          [class.ion-invalid]="isSubmitted && registerForm.get('password_confirmation')?.invalid"></ion-input>
+        <ion-button fill="clear" slot="end" (click)="toggleConfirmPassword()">
+          <ion-icon [name]="showConfirmPassword ? 'eye-off-outline' : 'eye-outline'" slot="icon-only">
+          </ion-icon>
+        </ion-button>
+      </ion-item>
+      <div class="error-message" *ngIf="isSubmitted && registerForm.get('password_confirmation')?.hasError('required')">
+        Confirma tu contraseña
+      </div>
+      <div class="error-message"
+        *ngIf="isSubmitted && registerForm.hasError('passwordMismatch') && !registerForm.get('password_confirmation')?.hasError('required')">
+        Las contraseñas no coinciden
+      </div>
+
+      <ion-item lines="none" class="terms-item">
+        <ion-checkbox formControlName="acceptTerms" slot="start">
+        </ion-checkbox>
+        <ion-label class="ion-text-wrap">
+          Acepto los
+          <a href="#" (click)="openTerms($event)">términos y condiciones</a>
+        </ion-label>
+      </ion-item>
+      <div class="error-message" *ngIf="isSubmitted && registerForm.get('acceptTerms')?.hasError('requiredTrue')">
+        Debes aceptar los términos y condiciones
+      </div>
+
+      <ion-text color="danger" *ngIf="errorMessage">
+        <p class="error-message-box">
+          <ion-icon name="alert-circle-outline"></ion-icon>
+          {{ errorMessage }}
+        </p>
+      </ion-text>
+
+      <ion-button expand="block" type="submit" [disabled]="isLoading" class="register-button">
+        <ion-spinner name="crescent" *ngIf="isLoading"></ion-spinner>
+        <span *ngIf="!isLoading">Crear Cuenta</span>
+      </ion-button>
+
+    </form>
+
+    <div class="login-section">
+      <p>¿Ya tienes una cuenta?
+        <a routerLink="/login">Inicia sesión</a>
+      </p>
+    </div>
+
+  </div>
+</ion-content>

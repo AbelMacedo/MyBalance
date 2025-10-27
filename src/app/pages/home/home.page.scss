@@ -1,0 +1,252 @@
+ion-content {
+  --background: #f5f7fa;
+}
+
+.welcome-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 30px 20px 40px 20px;
+  color: white;
+
+  h1 {
+    font-size: 28px;
+    font-weight: bold;
+    margin: 0 0 8px 0;
+  }
+
+  p {
+    font-size: 16px;
+    margin: 0;
+    opacity: 0.9;
+  }
+}
+
+.summary-section {
+  margin-top: -20px;
+
+  h2 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: var(--ion-color-dark);
+  }
+
+  .stat-card {
+    margin: 0;
+    border-radius: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.2s;
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    ion-card-content {
+      text-align: center;
+      padding: 20px 15px;
+    }
+
+    .stat-icon {
+      width: 50px;
+      height: 50px;
+      margin: 0 auto 10px auto;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      ion-icon {
+        font-size: 28px;
+        color: white;
+      }
+    }
+
+    h3 {
+      font-size: 24px;
+      font-weight: bold;
+      margin: 10px 0 5px 0;
+      color: var(--ion-color-dark);
+    }
+
+    p {
+      font-size: 13px;
+      color: var(--ion-color-medium);
+      margin: 0;
+    }
+  }
+
+  .habits-card .stat-icon {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+
+  .mood-card .stat-icon {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  }
+
+  .tasks-card .stat-icon {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  }
+
+  .streak-card .stat-icon {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+  }
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+
+  h2 {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0;
+    color: var(--ion-color-dark);
+  }
+
+  ion-button {
+    --color: var(--ion-color-primary);
+    font-size: 14px;
+  }
+}
+
+.habit-mini-card {
+  margin-bottom: 10px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+  .habit-mini-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .habit-mini-icon {
+      width: 45px;
+      height: 45px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+
+      ion-icon {
+        font-size: 24px;
+        color: white;
+      }
+    }
+
+    .habit-mini-info {
+      flex: 1;
+
+      h4 {
+        font-size: 16px;
+        font-weight: 600;
+        margin: 0 0 5px 0;
+        color: var(--ion-color-dark);
+      }
+
+      .habit-mini-streak {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 13px;
+        color: var(--ion-color-medium);
+
+        ion-icon {
+          font-size: 16px;
+        }
+      }
+    }
+  }
+}
+
+.empty-habits {
+  .empty-content {
+    text-align: center;
+    padding: 40px 20px;
+
+    ion-icon {
+      font-size: 80px;
+      margin-bottom: 15px;
+    }
+
+    h3 {
+      font-size: 20px;
+      font-weight: 600;
+      margin: 0 0 10px 0;
+      color: var(--ion-color-dark);
+    }
+
+    p {
+      font-size: 14px;
+      color: var(--ion-color-medium);
+      margin: 0 0 20px 0;
+    }
+  }
+}
+
+.tip-card {
+  border-radius: 15px;
+  background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  ion-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 10px;
+
+    ion-icon {
+      font-size: 28px;
+    }
+
+    ion-card-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+  }
+
+  ion-card-content p {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--ion-color-dark);
+    font-style: italic;
+    margin: 0;
+  }
+}
+
+.quick-actions {
+  h2 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: var(--ion-color-dark);
+  }
+
+  .quick-action {
+    background: white;
+    border-radius: 15px;
+    padding: 20px 10px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    transition: transform 0.2s;
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    ion-icon {
+      font-size: 36px;
+      margin-bottom: 8px;
+    }
+
+    p {
+      font-size: 13px;
+      font-weight: 500;
+      margin: 0;
+      color: var(--ion-color-dark);
+    }
+  }
+}

@@ -1,0 +1,163 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/habits/list"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Crear Hábito</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+
+  <form [formGroup]="habitForm" (ngSubmit)="onSubmit()">
+
+    <!-- Nombre del hábito -->
+    <ion-item lines="full">
+      <ion-label position="stacked">Nombre del hábito *</ion-label>
+      <ion-input
+        type="text"
+        placeholder="Ej: Hacer ejercicio, Leer 30 minutos..."
+        formControlName="name"
+        [class.ion-invalid]="isSubmitted && habitForm.get('name')?.invalid">
+      </ion-input>
+    </ion-item>
+    <div class="error-message"
+         *ngIf="isSubmitted && habitForm.get('name')?.hasError('required')">
+      El nombre es obligatorio
+    </div>
+
+    <!-- Descripción -->
+    <ion-item lines="full">
+      <ion-label position="stacked">Descripción (opcional)</ion-label>
+      <ion-textarea
+        rows="3"
+        placeholder="Describe tu hábito..."
+        formControlName="description">
+      </ion-textarea>
+    </ion-item>
+
+    <!-- Categoría -->
+    <ion-item lines="full">
+      <ion-label position="stacked">Categoría</ion-label>
+      <ion-select
+        placeholder="Selecciona una categoría"
+        formControlName="category_id">
+        <ion-select-option
+          *ngFor="let category of categories"
+          [value]="category.id">
+          {{ category.name }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <!-- Icono -->
+    <ion-item lines="full">
+      <ion-label position="stacked">Icono</ion-label>
+      <ion-select
+        placeholder="Selecciona un icono"
+        formControlName="icon">
+        <ion-select-option value="checkmark-circle">✓ Checkmark</ion-select-option>
+        <ion-select-option value="fitness">💪 Fitness</ion-select-option>
+        <ion-select-option value="book">📚 Libro</ion-select-option>
+        <ion-select-option value="water">💧 Agua</ion-select-option>
+        <ion-select-option value="moon">🌙 Luna</ion-select-option>
+        <ion-select-option value="sunny">☀️ Sol</ion-select-option>
+        <ion-select-option value="heart">❤️ Corazón</ion-select-option>
+        <ion-select-option value="leaf">🍃 Hoja</ion-select-option>
+        <ion-select-option value="bicycle">🚴 Bicicleta</ion-select-option>
+        <ion-select-option value="restaurant">🍽️ Comida</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <!-- Frecuencia -->
+    <ion-item lines="full">
+      <ion-label position="stacked">Frecuencia *</ion-label>
+      <ion-select
+        placeholder="¿Cuándo?"
+        formControlName="frequency"
+        (ionChange)="onFrequencyChange()">
+        <ion-select-option value="daily">Diario</ion-select-option>
+        <ion-select-option value="specific_days">Días específicos</ion-select-option>
+        <ion-select-option value="weekly">Semanal</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <!-- Días específicos -->
+    <div *ngIf="habitForm.get('frequency')?.value === 'specific_days'">
+      <ion-item lines="none">
+        <ion-label position="stacked">Selecciona los días</ion-label>
+      </ion-item>
+      <div class="days-selector">
+        <ion-chip
+          *ngFor="let day of weekDays"
+          [color]="isDaySelected(day.value) ? 'primary' : 'medium'"
+          (click)="toggleDay(day.value)">
+          <ion-label>{{ day.label }}</ion-label>
+        </ion-chip>
+      </div>
+    </div>
+
+    <!-- Prioridad -->
+    <ion-item lines="full">
+      <ion-label position="stacked">Prioridad</ion-label>
+      <ion-select
+        placeholder="Selecciona prioridad"
+        formControlName="priority">
+        <ion-select-option value="high">🔴 Alta</ion-select-option>
+        <ion-select-option value="medium">🟡 Media</ion-select-option>
+        <ion-select-option value="low">🟢 Baja</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <!-- Meta diaria -->
+    <ion-item lines="full">
+      <ion-label position="stacked">Veces al día</ion-label>
+      <ion-input
+        type="number"
+        min="1"
+        placeholder="1"
+        formControlName="target_count">
+      </ion-input>
+    </ion-item>
+
+    <!-- Vista previa -->
+    <ion-card class="preview-card">
+      <ion-card-header>
+        <ion-card-subtitle>Vista previa</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="preview-content">
+          <div class="preview-icon" [style.background]="getPreviewColor()">
+            <ion-icon [name]="habitForm.get('icon')?.value || 'checkmark-circle'"></ion-icon>
+          </div>
+          <div class="preview-info">
+            <h3>{{ habitForm.get('name')?.value || 'Nombre del hábito' }}</h3>
+            <p>{{ getPreviewFrequency() }}</p>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Botones -->
+    <div class="button-group">
+      <ion-button
+        expand="block"
+        type="submit"
+        [disabled]="isLoading"
+        color="primary">
+        <ion-spinner name="crescent" *ngIf="isLoading"></ion-spinner>
+        <span *ngIf="!isLoading">Crear Hábito</span>
+      </ion-button>
+
+      <ion-button
+        expand="block"
+        fill="outline"
+        (click)="cancel()"
+        [disabled]="isLoading">
+        Cancelar
+      </ion-button>
+    </div>
+
+  </form>
+
+</ion-content>

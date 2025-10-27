@@ -1,7 +1,6 @@
 const db = require('../config/database');
 const bcrypt = require('bcryptjs');
 
-// RF-26: Obtener perfil
 exports.getProfile = async (req, res) => {
     try {
         const [users] = await db.query(

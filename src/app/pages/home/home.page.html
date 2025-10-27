@@ -1,0 +1,169 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title>Mi Balance</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="logout()">
+        <ion-icon name="log-out-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <!-- Header con saludo -->
+  <div class="welcome-header">
+    <h1>¡Hola, {{ userName }}! 👋</h1>
+    <p>{{ getGreeting() }}</p>
+  </div>
+
+  <!-- Resumen del día -->
+  <div class="summary-section ion-padding">
+    <h2>Resumen de Hoy</h2>
+
+    <ion-grid>
+      <ion-row>
+        <ion-col size="6">
+          <ion-card class="stat-card habits-card" (click)="goToHabits()">
+            <ion-card-content>
+              <div class="stat-icon">
+                <ion-icon name="checkmark-circle"></ion-icon>
+              </div>
+              <h3>{{ completedHabits }}/{{ totalHabits }}</h3>
+              <p>Hábitos</p>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+
+        <ion-col size="6">
+          <ion-card class="stat-card mood-card" (click)="goToMood()">
+            <ion-card-content>
+              <div class="stat-icon">
+                <ion-icon name="happy"></ion-icon>
+              </div>
+              <h3>😊</h3>
+              <p>Estado de ánimo</p>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col size="6">
+          <ion-card class="stat-card tasks-card" (click)="goToTasks()">
+            <ion-card-content>
+              <div class="stat-icon">
+                <ion-icon name="calendar"></ion-icon>
+              </div>
+              <h3>0/0</h3>
+              <p>Tareas</p>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+
+        <ion-col size="6">
+          <ion-card class="stat-card streak-card">
+            <ion-card-content>
+              <div class="stat-icon">
+                <ion-icon name="flame"></ion-icon>
+              </div>
+              <h3>{{ longestStreak }}</h3>
+              <p>Racha más larga</p>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+
+  <!-- Hábitos de hoy -->
+  <div class="today-habits ion-padding" *ngIf="todayHabits.length > 0">
+    <div class="section-header">
+      <h2>Hábitos de Hoy</h2>
+      <ion-button fill="clear" size="small" (click)="goToHabits()">
+        Ver todos
+        <ion-icon name="chevron-forward" slot="end"></ion-icon>
+      </ion-button>
+    </div>
+
+    <ion-card
+      *ngFor="let habit of todayHabits.slice(0, 3)"
+      class="habit-mini-card"
+      (click)="goToHabitDetail(habit.id)">
+      <ion-card-content>
+        <div class="habit-mini-content">
+          <div class="habit-mini-icon" [style.background]="habit.category_color || '#667eea'">
+            <ion-icon [name]="habit.icon"></ion-icon>
+          </div>
+          <div class="habit-mini-info">
+            <h4>{{ habit.name }}</h4>
+            <div class="habit-mini-streak">
+              <ion-icon name="flame" color="warning"></ion-icon>
+              <span>{{ habit.current_streak || 0 }} días</span>
+            </div>
+          </div>
+          <ion-checkbox
+            [checked]="false"
+            (ionChange)="toggleHabitComplete(habit, $event)">
+          </ion-checkbox>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Mensaje si no hay hábitos -->
+  <div class="empty-habits ion-padding" *ngIf="todayHabits.length === 0">
+    <ion-card>
+      <ion-card-content class="empty-content">
+        <ion-icon name="leaf-outline" color="medium"></ion-icon>
+        <h3>No tienes hábitos para hoy</h3>
+        <p>Crea tu primer hábito y comienza a mejorar tu día a día</p>
+        <ion-button expand="block" (click)="goToCreateHabit()">
+          <ion-icon name="add-circle" slot="start"></ion-icon>
+          Crear Hábito
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Consejo del día (próximamente) -->
+  <div class="tip-section ion-padding">
+    <ion-card class="tip-card">
+      <ion-card-header>
+        <ion-icon name="bulb" color="warning"></ion-icon>
+        <ion-card-title>Consejo del Día</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p>"La constancia es la clave del éxito. Un pequeño paso cada día te llevará muy lejos."</p>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Accesos rápidos -->
+  <div class="quick-actions ion-padding">
+    <h2>Accesos Rápidos</h2>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="4">
+          <div class="quick-action" (click)="goToHabits()">
+            <ion-icon name="checkmark-circle" color="primary"></ion-icon>
+            <p>Hábitos</p>
+          </div>
+        </ion-col>
+        <ion-col size="4">
+          <div class="quick-action" (click)="goToMood()">
+            <ion-icon name="happy" color="secondary"></ion-icon>
+            <p>Ánimo</p>
+          </div>
+        </ion-col>
+        <ion-col size="4">
+          <div class="quick-action" (click)="goToTasks()">
+            <ion-icon name="calendar" color="tertiary"></ion-icon>
+            <p>Tareas</p>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+
+</ion-content>

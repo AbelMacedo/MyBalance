@@ -1,0 +1,191 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/habits/list"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Detalle del Hábito</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="openOptionsMenu()">
+        <ion-icon name="ellipsis-vertical" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="loading-container">
+    <ion-spinner color="primary"></ion-spinner>
+  </div>
+
+  <!-- Contenido del hábito -->
+  <div *ngIf="!isLoading && habit">
+
+    <!-- Header del hábito -->
+    <div class="habit-header" [style.background]="habit.category_color || '#667eea'">
+      <div class="habit-icon-large">
+        <ion-icon [name]="habit.icon"></ion-icon>
+      </div>
+      <h1>{{ habit.name }}</h1>
+      <p *ngIf="habit.description">{{ habit.description }}</p>
+
+      <div class="habit-badges">
+        <ion-badge [color]="getPriorityColor(habit.priority)">
+          {{ habit.priority | uppercase }}
+        </ion-badge>
+        <ion-badge color="light">
+          {{ getFrequencyText(habit.frequency) }}
+        </ion-badge>
+        <ion-badge *ngIf="habit.is_paused" color="warning">
+          PAUSADO
+        </ion-badge>
+      </div>
+    </div>
+
+    <!-- Estadísticas principales -->
+    <div class="stats-section ion-padding">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="4">
+            <div class="stat-box">
+              <ion-icon name="flame" color="danger"></ion-icon>
+              <h3>{{ habit.current_streak || 0 }}</h3>
+              <p>Racha Actual</p>
+            </div>
+          </ion-col>
+          <ion-col size="4">
+            <div class="stat-box">
+              <ion-icon name="trophy" color="warning"></ion-icon>
+              <h3>{{ habit.longest_streak || 0 }}</h3>
+              <p>Mejor Racha</p>
+            </div>
+          </ion-col>
+          <ion-col size="4">
+            <div class="stat-box">
+              <ion-icon name="checkmark-done" color="success"></ion-icon>
+              <h3>{{ stats?.total_completions || 0 }}</h3>
+              <p>Completados</p>
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+
+    <!-- Botón de completar -->
+    <div class="action-section ion-padding" *ngIf="!habit.is_paused">
+      <ion-button
+        expand="block"
+        size="large"
+        [color]="isCompletedToday ? 'success' : 'primary'"
+        (click)="toggleComplete()">
+        <ion-icon
+          [name]="isCompletedToday ? 'checkmark-circle' : 'checkmark-circle-outline'"
+          slot="start">
+        </ion-icon>
+        {{ isCompletedToday ? '¡Completado Hoy!' : 'Marcar como Completado' }}
+      </ion-button>
+    </div>
+
+    <!-- Selector de período -->
+    <div class="period-selector ion-padding">
+      <ion-segment [(ngModel)]="selectedPeriod" (ionChange)="onPeriodChange()">
+        <ion-segment-button value="week">
+          <ion-label>Semana</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="month">
+          <ion-label>Mes</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="year">
+          <ion-label>Año</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </div>
+
+    <!-- Gráfica de progreso -->
+    <div class="chart-section ion-padding">
+      <h2>Progreso</h2>
+      <ion-card>
+        <ion-card-content>
+          <div class="progress-visual">
+            <ion-progress-bar
+              [value]="getCompletionRate()"
+              color="success">
+            </ion-progress-bar>
+            <p class="progress-text">
+              {{ (getCompletionRate() * 100).toFixed(0) }}% de cumplimiento
+            </p>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Calendario de completados -->
+    <div class="calendar-section ion-padding">
+      <h2>Historial</h2>
+      <ion-card>
+        <ion-card-content>
+          <div class="completion-calendar">
+            <div
+              *ngFor="let day of getLast30Days()"
+              class="calendar-day"
+              [class.completed]="isDayCompleted(day)"
+              [class.today]="isToday(day)">
+              <span class="day-number">{{ day.getDate() }}</span>
+            </div>
+          </div>
+          <div class="calendar-legend">
+            <div class="legend-item">
+              <div class="legend-box completed"></div>
+              <span>Completado</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-box"></div>
+              <span>Pendiente</span>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Información adicional -->
+    <div class="info-section ion-padding">
+      <h2>Información</h2>
+      <ion-list>
+        <ion-item>
+          <ion-icon name="pricetag" slot="start" color="primary"></ion-icon>
+          <ion-label>
+            <h3>Categoría</h3>
+            <p>{{ habit.category_name || 'Sin categoría' }}</p>
+          </ion-label>
+        </ion-item>
+
+        <ion-item>
+          <ion-icon name="calendar" slot="start" color="primary"></ion-icon>
+          <ion-label>
+            <h3>Frecuencia</h3>
+            <p>{{ getFrequencyDetails() }}</p>
+          </ion-label>
+        </ion-item>
+
+        <ion-item>
+          <ion-icon name="flag" slot="start" color="primary"></ion-icon>
+          <ion-label>
+            <h3>Meta diaria</h3>
+            <p>{{ habit.target_count }} {{ habit.target_count > 1 ? 'veces' : 'vez' }}</p>
+          </ion-label>
+        </ion-item>
+
+        <ion-item>
+          <ion-icon name="time" slot="start" color="primary"></ion-icon>
+          <ion-label>
+            <h3>Creado</h3>
+            <p>{{ formatDate(habit.created_at) }}</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </div>
+
+  </div>
+
+</ion-content>
