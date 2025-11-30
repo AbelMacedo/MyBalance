@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://tu-dominio.com/api' 
+  apiUrl: 'https://mybalance-production-f447.up.railway.app/api'
 };
