@@ -1,0 +1,118 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="success">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Consejos de Bienestar</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <!-- Consejo del día -->
+  <div class="daily-tip-section ion-padding">
+    <h2>💡 Consejo del Día</h2>
+
+    <ion-card *ngIf="dailyTip" class="daily-tip-card" [style.border-left-color]="dailyTip.category_color">
+      <ion-card-content>
+        <div class="tip-header">
+          <ion-chip [style.--background]="dailyTip.category_color">
+            <ion-icon [name]="dailyTip.category_icon"></ion-icon>
+            <ion-label>{{ dailyTip.category_name }}</ion-label>
+          </ion-chip>
+          <ion-badge [color]="getDifficultyColor(dailyTip.difficulty)">
+            {{ getDifficultyLabel(dailyTip.difficulty) }}
+          </ion-badge>
+        </div>
+
+        <h3>{{ dailyTip.title }}</h3>
+        <p>{{ dailyTip.content }}</p>
+
+        <div class="tip-footer" *ngIf="dailyTip.estimated_time">
+          <ion-icon name="time-outline"></ion-icon>
+          <span>{{ dailyTip.estimated_time }} min</span>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card *ngIf="!dailyTip && !isLoadingDaily" class="empty-tip">
+      <ion-card-content>
+        <ion-icon name="bulb-outline" color="medium"></ion-icon>
+        <p>No hay consejo disponible</p>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-spinner *ngIf="isLoadingDaily" color="success"></ion-spinner>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filters-section ion-padding">
+    <h2>Explora Más Consejos</h2>
+
+    <ion-segment [(ngModel)]="selectedCategory" (ionChange)="onCategoryChange()">
+      <ion-segment-button value="all">
+        <ion-label>Todos</ion-label>
+      </ion-segment-button>
+      <ion-segment-button *ngFor="let cat of categories" [value]="cat.id.toString()">
+        <ion-icon [name]="cat.icon"></ion-icon>
+      </ion-segment-button>
+    </ion-segment>
+  </div>
+
+  <!-- Lista de consejos -->
+  <div class="tips-list ion-padding">
+    <ion-card
+      *ngFor="let tip of tips"
+      class="tip-card"
+      [style.border-left-color]="tip.category_color"
+      (click)="expandTip(tip)">
+      <ion-card-content>
+        <div class="tip-header">
+          <ion-chip size="small" [style.--background]="tip.category_color">
+            <ion-icon [name]="tip.category_icon"></ion-icon>
+            <ion-label>{{ tip.category_name }}</ion-label>
+          </ion-chip>
+          <ion-badge [color]="getDifficultyColor(tip.difficulty)">
+            {{ getDifficultyLabel(tip.difficulty) }}
+          </ion-badge>
+        </div>
+
+        <h3>{{ tip.title }}</h3>
+
+        <p [class.expanded]="expandedTipId === tip.id">
+          {{ tip.content }}
+        </p>
+
+        <div class="tip-footer">
+          <div *ngIf="tip.estimated_time">
+            <ion-icon name="time-outline"></ion-icon>
+            <span>{{ tip.estimated_time }} min</span>
+          </div>
+
+          <ion-button
+            fill="clear"
+            size="small"
+            (click)="expandTip(tip); $event.stopPropagation()">
+            <ion-icon
+              [name]="expandedTipId === tip.id ? 'chevron-up' : 'chevron-down'"
+              slot="icon-only">
+            </ion-icon>
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Estado vacío -->
+    <div *ngIf="tips.length === 0 && !isLoading" class="empty-state">
+      <ion-icon name="document-text-outline" color="medium"></ion-icon>
+      <h3>No hay consejos disponibles</h3>
+      <p>Intenta con otra categoría</p>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="isLoading" class="loading-container">
+      <ion-spinner color="success"></ion-spinner>
+    </div>
+  </div>
+
+</ion-content>

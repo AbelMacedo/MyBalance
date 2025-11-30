@@ -1,0 +1,225 @@
+ion-toolbar {
+  --background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+h2 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: var(--ion-color-dark);
+}
+
+.points-section {
+  .points-card {
+    border-radius: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+
+    .points-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+
+      h3 {
+        font-size: 28px;
+        font-weight: bold;
+        margin: 0;
+      }
+
+      p {
+        font-size: 14px;
+        margin: 5px 0 0 0;
+        opacity: 0.9;
+      }
+
+      ion-icon {
+        font-size: 48px;
+      }
+    }
+
+    ion-progress-bar {
+      height: 8px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+
+    .progress-text {
+      font-size: 12px;
+      margin: 0;
+      opacity: 0.9;
+    }
+  }
+}
+
+.challenges-list {
+  .challenge-card {
+    border-radius: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    border-left: 6px solid;
+    transition: transform 0.2s, box-shadow 0.2s;
+
+    &.easy {
+      border-left-color: #4CAF50;
+    }
+
+    &.medium {
+      border-left-color: #FF9800;
+    }
+
+    &.hard {
+      border-left-color: #F44336;
+    }
+
+    &.active {
+      cursor: pointer;
+
+      &:active {
+        transform: scale(0.98);
+      }
+    }
+
+    &.completed {
+      background: linear-gradient(135deg, rgba(76, 175, 80, 0.1) 0%, rgba(139, 195, 74, 0.1) 100%);
+    }
+
+    .challenge-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+
+      ion-chip {
+        font-size: 12px;
+      }
+    }
+
+    h3 {
+      font-size: 20px;
+      font-weight: bold;
+      margin: 0 0 10px 0;
+      color: var(--ion-color-dark);
+    }
+
+    p {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--ion-color-medium);
+      margin: 0 0 15px 0;
+    }
+
+    .challenge-info {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+
+      .info-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 13px;
+        color: var(--ion-color-medium);
+
+        ion-icon {
+          font-size: 16px;
+        }
+      }
+    }
+
+    .progress-section {
+      margin-bottom: 15px;
+
+      .progress-header {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: var(--ion-color-dark);
+      }
+
+      ion-progress-bar {
+        height: 10px;
+        border-radius: 5px;
+      }
+    }
+
+    .challenge-stats {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 15px;
+
+      .stat {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        color: var(--ion-color-dark);
+
+        ion-icon {
+          font-size: 20px;
+        }
+      }
+    }
+
+    .completed-info {
+      background: rgba(76, 175, 80, 0.1);
+      border-radius: 12px;
+      padding: 15px;
+
+      p {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 8px 0;
+        font-size: 14px;
+        color: var(--ion-color-dark);
+
+        ion-icon {
+          font-size: 18px;
+        }
+      }
+    }
+
+    ion-button {
+      margin-top: 10px;
+      font-weight: 600;
+      --border-radius: 12px;
+      height: 44px;
+    }
+  }
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+
+  ion-icon {
+    font-size: 80px;
+    margin-bottom: 20px;
+  }
+
+  h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0 0 10px 0;
+    color: var(--ion-color-dark);
+  }
+
+  p {
+    color: var(--ion-color-medium);
+    margin: 0 0 20px 0;
+  }
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  padding: 60px 0;
+
+  ion-spinner {
+    transform: scale(1.5);
+  }
+}

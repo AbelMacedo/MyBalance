@@ -1,0 +1,69 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="warning">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/wellness/challenges"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Detalle del Reto</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <div *ngIf="!isLoading && challenge">
+
+    <!-- Header -->
+    <div class="challenge-header" [style.background]="challenge.category_color">
+      <h1>{{ challenge.title }}</h1>
+      <div class="header-info">
+        <ion-badge color="light">
+          {{ challenge.days_remaining }} días restantes
+        </ion-badge>
+      </div>
+    </div>
+
+    <!-- Progreso -->
+    <div class="progress-section ion-padding">
+      <h2>Tu Progreso</h2>
+      <ion-card>
+        <ion-card-content>
+          <div class="progress-info">
+            <!-- ✅ PROTECCIÓN AQUÍ -->
+            <span>{{ ((+challenge.progress_percentage) || 0).toFixed(0) }}% Completado</span>
+            <span>{{ challenge.current_streak || 0 }}/{{ challenge.duration_days }} días</span>
+          </div>
+          <ion-progress-bar [value]="((+challenge.progress_percentage) || 0) / 100" color="success">
+          </ion-progress-bar>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Descripción -->
+    <div class="description-section ion-padding">
+      <h2>Descripción</h2>
+      <ion-card>
+        <ion-card-content>
+          <p>{{ challenge.description }}</p>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Acciones -->
+    <div class="actions-section ion-padding">
+      <ion-button expand="block" color="success" size="large" (click)="markToday()">
+        <ion-icon name="checkmark-circle" slot="start"></ion-icon>
+        Marcar Hoy como Completado
+      </ion-button>
+
+      <ion-button expand="block" fill="outline" color="danger" (click)="abandonChallenge()">
+        <ion-icon name="close-circle" slot="start"></ion-icon>
+        Abandonar Reto
+      </ion-button>
+    </div>
+
+  </div>
+
+  <div *ngIf="isLoading" class="loading-container">
+    <ion-spinner color="warning"></ion-spinner>
+  </div>
+
+</ion-content>

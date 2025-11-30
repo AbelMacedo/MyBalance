@@ -1,0 +1,291 @@
+// Challenge Detail Page Styles
+
+.challenge-header {
+  position: relative;
+  padding: 2rem 1.5rem;
+  background: linear-gradient(135deg, var(--ion-color-primary) 0%, var(--ion-color-primary-shade) 100%);
+  color: white;
+  border-radius: 0 0 30px 30px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,160C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+    background-size: cover;
+    opacity: 0.3;
+    border-radius: 0 0 30px 30px;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 0 0 1rem 0;
+    position: relative;
+    z-index: 1;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .header-info {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+
+    ion-badge {
+      font-size: 0.9rem;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-weight: 600;
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.95) !important;
+      color: var(--ion-color-primary);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+  }
+}
+
+.progress-section {
+  h2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--ion-color-dark);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    &::before {
+      content: '📈';
+      font-size: 1.5rem;
+    }
+  }
+
+  ion-card {
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+
+    ion-card-content {
+      padding: 1.5rem;
+    }
+  }
+
+  .progress-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+
+    span {
+      &:first-child {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--ion-color-success);
+        background: linear-gradient(135deg, var(--ion-color-success), var(--ion-color-success-tint));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      &:last-child {
+        font-size: 1rem;
+        color: var(--ion-color-medium);
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+
+        &::before {
+          content: '🔥';
+          font-size: 1.2rem;
+        }
+      }
+    }
+  }
+
+  ion-progress-bar {
+    height: 12px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    &::part(progress) {
+      border-radius: 10px;
+      background: linear-gradient(90deg, var(--ion-color-success), var(--ion-color-success-tint));
+      box-shadow: 0 0 10px rgba(var(--ion-color-success-rgb), 0.5);
+    }
+
+    &::part(track) {
+      background: rgba(var(--ion-color-success-rgb), 0.1);
+    }
+  }
+}
+
+.description-section {
+  h2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--ion-color-dark);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    &::before {
+      content: '📝';
+      font-size: 1.5rem;
+    }
+  }
+
+  ion-card {
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+
+    ion-card-content {
+      padding: 1.5rem;
+
+      p {
+        font-size: 1rem;
+        line-height: 1.7;
+        color: var(--ion-color-dark);
+        margin: 0;
+        text-align: justify;
+      }
+    }
+  }
+}
+
+.actions-section {
+  padding-bottom: 2rem;
+
+  ion-button {
+    margin-bottom: 1rem;
+    height: 56px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 16px;
+    text-transform: none;
+    letter-spacing: 0.3px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+
+    &:active {
+      transform: scale(0.98);
+    }
+
+    &[color="success"] {
+      --background: linear-gradient(135deg, var(--ion-color-success) 0%, var(--ion-color-success-shade) 100%);
+
+      &:hover {
+        --background: var(--ion-color-success-shade);
+      }
+    }
+
+    &[color="danger"] {
+      border: 2px solid var(--ion-color-danger);
+      --color: var(--ion-color-danger);
+      box-shadow: none;
+
+      &:hover {
+        --background: rgba(var(--ion-color-danger-rgb), 0.05);
+      }
+    }
+
+    ion-icon {
+      font-size: 1.5rem;
+      margin-right: 0.5rem;
+    }
+  }
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  gap: 1rem;
+
+  ion-spinner {
+    width: 50px;
+    height: 50px;
+  }
+
+  p {
+    color: var(--ion-color-medium);
+    font-size: 0.9rem;
+  }
+}
+
+// Animaciones
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.progress-section,
+.description-section,
+.actions-section {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.progress-section {
+  animation-delay: 0.1s;
+}
+
+.description-section {
+  animation-delay: 0.2s;
+}
+
+.actions-section {
+  animation-delay: 0.3s;
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .challenge-header {
+    padding: 1.5rem 1rem;
+
+    h1 {
+      font-size: 1.5rem;
+    }
+  }
+
+  .progress-section,
+  .description-section {
+    h2 {
+      font-size: 1.1rem;
+    }
+  }
+
+  .progress-info span:first-child {
+    font-size: 1.5rem !important;
+  }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .description-section ion-card {
+    background: linear-gradient(135deg, var(--ion-card-background) 0%, rgba(255, 255, 255, 0.02) 100%);
+  }
+
+  ion-card {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  }
+}

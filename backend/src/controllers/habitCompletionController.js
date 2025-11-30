@@ -123,7 +123,6 @@ exports.getHabitStats = async (req, res) => {
       [habit_id, userId, startDate, endDate]
     );
 
-    s
     const [statusResult] = await db.query(
       `SELECT status, COUNT(*) as count FROM habit_completions
             WHERE habit_id = ? AND user_id = ? AND completion_date BETWEEN ? AND ?

@@ -1,0 +1,235 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="tertiary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Mis Tareas</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="openFilterMenu()">
+        <ion-icon name="filter-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <!-- Selector de fecha -->
+  <ion-toolbar>
+    <ion-segment [(ngModel)]="selectedDate" (ionChange)="onDateChange()">
+      <ion-segment-button value="yesterday">
+        <ion-label>Ayer</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="today">
+        <ion-label>Hoy</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="tomorrow">
+        <ion-label>Mañana</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="all">
+        <ion-label>Todas</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="loading-container">
+    <ion-spinner color="tertiary"></ion-spinner>
+    <p>Cargando tareas...</p>
+  </div>
+
+  <!-- Resumen del día -->
+  <div class="summary-section ion-padding" *ngIf="!isLoading && selectedDate === 'today'">
+    <ion-card class="summary-card">
+      <ion-card-content>
+        <div class="summary-content">
+          <div class="summary-item">
+            <h3>{{ completedToday }}</h3>
+            <p>Completadas</p>
+          </div>
+          <div class="summary-divider"></div>
+          <div class="summary-item">
+            <h3>{{ tasks.length }}</h3>
+            <p>Total</p>
+          </div>
+          <div class="summary-divider"></div>
+          <div class="summary-item">
+            <h3>{{ completionPercentage }}%</h3>
+            <p>Progreso</p>
+          </div>
+        </div>
+        <ion-progress-bar
+          [value]="completionPercentage / 100"
+          color="success">
+        </ion-progress-bar>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Lista vacía -->
+  <div *ngIf="!isLoading && tasks.length === 0" class="empty-state ion-padding">
+    <ion-icon name="checkbox-outline" color="medium"></ion-icon>
+    <h2>Sin tareas</h2>
+    <p>No tienes tareas {{ getEmptyMessage() }}</p>
+    <ion-button expand="block" (click)="goToCreate()">
+      <ion-icon name="add-circle-outline" slot="start"></ion-icon>
+      Crear Nueva Tarea
+    </ion-button>
+  </div>
+
+  <!-- Lista de tareas -->
+  <div class="tasks-list ion-padding" *ngIf="!isLoading && tasks.length > 0">
+
+    <!-- Tareas pendientes -->
+    <div *ngIf="pendingTasks.length > 0">
+      <div class="section-header">
+        <h3>Pendientes ({{ pendingTasks.length }})</h3>
+      </div>
+
+      <ion-card
+        *ngFor="let task of pendingTasks"
+        class="task-card"
+        [class.high-priority]="task.priority === 'high'"
+        (click)="goToDetail(task.id)">
+        <ion-card-content>
+          <div class="task-content">
+
+            <!-- Checkbox -->
+            <ion-checkbox
+              [checked]="task.is_completed"
+              (ionChange)="toggleComplete(task, $event)">
+            </ion-checkbox>
+
+            <!-- Información de la tarea -->
+            <div class="task-info">
+              <h4 [class.completed]="task.is_completed">{{ task.title }}</h4>
+
+              <div class="task-meta">
+                <!-- Categoría -->
+                <ion-chip
+                  *ngIf="task.category_name"
+                  size="small"
+                  [style.--background]="task.category_color">
+                  <ion-icon [name]="task.category_icon"></ion-icon>
+                  <ion-label>{{ task.category_name }}</ion-label>
+                </ion-chip>
+
+                <!-- Prioridad -->
+                <ion-badge [color]="getPriorityColor(task.priority)">
+                  {{ getPriorityLabel(task.priority) }}
+                </ion-badge>
+
+                <!-- Tiempo estimado -->
+                <span class="time-estimate" *ngIf="task.estimated_time">
+                  <ion-icon name="time-outline"></ion-icon>
+                  {{ task.estimated_time }} min
+                </span>
+
+                <!-- Recordatorio -->
+                <ion-icon
+                  *ngIf="task.reminder_enabled"
+                  name="alarm-outline"
+                  color="warning"
+                  class="reminder-icon">
+                </ion-icon>
+              </div>
+
+              <!-- Descripción (preview) -->
+              <p class="task-description" *ngIf="task.description">
+                {{ task.description | slice:0:80 }}{{ task.description.length > 80 ? '...' : '' }}
+              </p>
+            </div>
+
+            <!-- Botón de opciones -->
+            <ion-button
+              fill="clear"
+              size="small"
+              (click)="openOptionsMenu(task, $event)">
+              <ion-icon name="ellipsis-vertical" slot="icon-only"></ion-icon>
+            </ion-button>
+
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Tareas completadas -->
+    <div *ngIf="completedTasks.length > 0" class="completed-section">
+      <div class="section-header">
+        <h3>Completadas ({{ completedTasks.length }})</h3>
+        <ion-button
+          fill="clear"
+          size="small"
+          (click)="toggleShowCompleted()">
+          <ion-icon
+            [name]="showCompleted ? 'chevron-up' : 'chevron-down'"
+            slot="icon-only">
+          </ion-icon>
+        </ion-button>
+      </div>
+
+      <div *ngIf="showCompleted">
+        <ion-card
+          *ngFor="let task of completedTasks"
+          class="task-card completed">
+          <ion-card-content>
+            <div class="task-content">
+
+              <ion-checkbox
+                [checked]="task.is_completed"
+                (ionChange)="toggleComplete(task, $event)">
+              </ion-checkbox>
+
+              <div class="task-info">
+                <h4 class="completed">{{ task.title }}</h4>
+
+                <div class="task-meta">
+                  <ion-chip
+                    *ngIf="task.category_name"
+                    size="small"
+                    [style.--background]="task.category_color">
+                    <ion-icon [name]="task.category_icon"></ion-icon>
+                    <ion-label>{{ task.category_name }}</ion-label>
+                  </ion-chip>
+
+                  <span class="completed-time">
+                    <ion-icon name="checkmark-circle"></ion-icon>
+                    {{ formatCompletedTime(task.completed_at) }}
+                  </span>
+                </div>
+              </div>
+
+              <ion-button
+                fill="clear"
+                size="small"
+                (click)="openOptionsMenu(task, $event)">
+                <ion-icon name="ellipsis-vertical" slot="icon-only"></ion-icon>
+              </ion-button>
+
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </div>
+    </div>
+
+    <!-- Botón de balance diario -->
+    <div class="balance-button-section" *ngIf="selectedDate === 'today'">
+      <ion-button
+        expand="block"
+        color="warning"
+        (click)="goToBalance()">
+        <ion-icon name="star" slot="start"></ion-icon>
+        Balance del Día
+      </ion-button>
+    </div>
+
+  </div>
+
+  <!-- FAB para crear tarea -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="goToCreate()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+</ion-content>

@@ -1,0 +1,127 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="warning">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tasks/list"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Balance del Día</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+
+  <!-- Header motivacional -->
+  <div class="balance-header">
+    <ion-icon name="star" color="warning"></ion-icon>
+    <h1>Reflexiona sobre tu día</h1>
+    <p>Tómate un momento para evaluar cómo fue tu día</p>
+  </div>
+
+  <!-- Formulario -->
+  <form [formGroup]="balanceForm" (ngSubmit)="onSubmit()">
+
+    <!-- ¿Qué hice bien hoy? -->
+    <div class="question-section">
+      <h2>
+        <ion-icon name="happy" color="success"></ion-icon>
+        ¿Qué hice bien hoy?
+      </h2>
+      <ion-item lines="none" class="text-area-item">
+        <ion-textarea
+          rows="5"
+          placeholder="Celebra tus logros, por pequeños que sean..."
+          formControlName="what_went_well"
+          [class.ion-invalid]="isSubmitted && balanceForm.get('what_went_well')?.invalid">
+        </ion-textarea>
+      </ion-item>
+      <div class="error-message"
+           *ngIf="isSubmitted && balanceForm.get('what_went_well')?.hasError('required')">
+        Este campo es obligatorio
+      </div>
+    </div>
+
+    <!-- ¿Qué puedo mejorar mañana? -->
+    <div class="question-section">
+      <h2>
+        <ion-icon name="bulb" color="primary"></ion-icon>
+        ¿Qué puedo mejorar mañana?
+      </h2>
+      <ion-item lines="none" class="text-area-item">
+        <ion-textarea
+          rows="5"
+          placeholder="Identifica oportunidades de crecimiento..."
+          formControlName="what_to_improve"
+          [class.ion-invalid]="isSubmitted && balanceForm.get('what_to_improve')?.invalid">
+        </ion-textarea>
+      </ion-item>
+      <div class="error-message"
+           *ngIf="isSubmitted && balanceForm.get('what_to_improve')?.hasError('required')">
+        Este campo es obligatorio
+      </div>
+    </div>
+
+    <!-- Calificación del día -->
+    <div class="rating-section">
+      <h2>
+        <ion-icon name="thumbs-up" color="warning"></ion-icon>
+        ¿Cómo calificarías tu día?
+      </h2>
+
+      <div class="stars-container">
+        <ion-icon
+          *ngFor="let star of [1,2,3,4,5]"
+          [name]="star <= selectedRating ? 'star' : 'star-outline'"
+          [color]="star <= selectedRating ? 'warning' : 'medium'"
+          size="large"
+          (click)="selectRating(star)">
+        </ion-icon>
+      </div>
+
+      <p class="rating-label">{{ getRatingLabel(selectedRating) }}</p>
+
+      <div class="error-message"
+           *ngIf="isSubmitted && !selectedRating">
+        Debes calificar tu día
+      </div>
+    </div>
+
+    <!-- Resumen -->
+    <ion-card class="summary-card" *ngIf="balanceForm.get('what_went_well')?.value || balanceForm.get('what_to_improve')?.value">
+      <ion-card-header>
+        <ion-card-subtitle>Resumen de tu balance</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="summary-item" *ngIf="balanceForm.get('what_went_well')?.value">
+          <ion-icon name="checkmark-circle" color="success"></ion-icon>
+          <p>{{ balanceForm.get('what_went_well')?.value | slice:0:100 }}...</p>
+        </div>
+        <div class="summary-item" *ngIf="balanceForm.get('what_to_improve')?.value">
+          <ion-icon name="arrow-up-circle" color="primary"></ion-icon>
+          <p>{{ balanceForm.get('what_to_improve')?.value | slice:0:100 }}...</p>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Botones -->
+    <div class="button-group">
+      <ion-button
+        expand="block"
+        type="submit"
+        [disabled]="isLoading"
+        color="warning"
+        size="large">
+        <ion-spinner name="crescent" *ngIf="isLoading"></ion-spinner>
+        <span *ngIf="!isLoading">Guardar Balance</span>
+      </ion-button>
+
+      <ion-button
+        expand="block"
+        fill="outline"
+        (click)="cancel()"
+        [disabled]="isLoading">
+        Cancelar
+      </ion-button>
+    </div>
+
+  </form>
+
+</ion-content>

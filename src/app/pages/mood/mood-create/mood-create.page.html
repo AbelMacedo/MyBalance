@@ -1,0 +1,151 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="secondary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/mood/list"></ion-back-button>
+    </ion-buttons>
+    <ion-title>¿Cómo te sientes?</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+
+  <form (ngSubmit)="onSubmit()">
+
+    <!-- Selector de emoción -->
+    <div class="section">
+      <h2>Selecciona tu emoción</h2>
+      <p class="section-subtitle">¿Cómo te sientes en este momento?</p>
+
+      <div class="emotions-grid">
+        <div
+          *ngFor="let emotion of emotions"
+          class="emotion-item"
+          [class.selected]="selectedEmotion?.id === emotion.id"
+          (click)="selectEmotion(emotion)">
+          <div class="emotion-circle" [style.background]="emotion.color">
+            <span class="emoji">{{ emotion.emoji }}</span>
+          </div>
+          <p class="emotion-name">{{ emotion.name }}</p>
+        </div>
+      </div>
+
+      <div class="error-message" *ngIf="isSubmitted && !selectedEmotion">
+        Debes seleccionar una emoción
+      </div>
+    </div>
+
+    <!-- Intensidad -->
+    <div class="section" *ngIf="selectedEmotion">
+      <h2>Intensidad</h2>
+      <p class="section-subtitle">¿Qué tan fuerte es esta emoción?</p>
+
+      <div class="intensity-selector">
+        <ion-range
+          [(ngModel)]="intensity"
+          [ngModelOptions]="{standalone: true}"
+          min="1"
+          max="5"
+          step="1"
+          snaps="true"
+          [pin]="true"
+          [ticks]="true"
+          color="secondary">
+          <ion-label slot="start">😐</ion-label>
+          <ion-label slot="end">🤩</ion-label>
+        </ion-range>
+
+        <div class="intensity-stars">
+          <ion-icon
+            *ngFor="let star of [1,2,3,4,5]"
+            [name]="star <= intensity ? 'star' : 'star-outline'"
+            [color]="star <= intensity ? 'warning' : 'medium'"
+            size="large">
+          </ion-icon>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nota -->
+    <div class="section" *ngIf="selectedEmotion">
+      <h2>Escribe una nota (opcional)</h2>
+      <p class="section-subtitle">¿Qué causó esta emoción?</p>
+
+      <ion-item lines="none" class="note-item">
+        <ion-textarea
+          [(ngModel)]="note"
+          [ngModelOptions]="{standalone: true}"
+          rows="5"
+          maxlength="500"
+          placeholder="Comparte tus pensamientos..."
+          [counter]="true">
+        </ion-textarea>
+      </ion-item>
+    </div>
+
+    <!-- Etiquetas -->
+    <div class="section" *ngIf="selectedEmotion">
+      <h2>Etiquetas (opcional)</h2>
+      <p class="section-subtitle">¿A qué área de tu vida se relaciona?</p>
+
+      <div class="tags-selector">
+        <ion-chip
+          *ngFor="let tag of tags"
+          [color]="isTagSelected(tag.id) ? 'secondary' : 'medium'"
+          (click)="toggleTag(tag.id)">
+          <ion-icon [name]="tag.icon"></ion-icon>
+          <ion-label>{{ tag.name }}</ion-label>
+        </ion-chip>
+      </div>
+    </div>
+
+    <!-- Vista previa -->
+    <div class="preview-section" *ngIf="selectedEmotion">
+      <ion-card class="preview-card">
+        <ion-card-header>
+          <ion-card-subtitle>Vista previa</ion-card-subtitle>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="preview-content">
+            <div class="preview-emotion" [style.background]="selectedEmotion.color">
+              <span class="emoji">{{ selectedEmotion.emoji }}</span>
+            </div>
+            <div class="preview-info">
+              <h3>{{ selectedEmotion.name }}</h3>
+              <div class="preview-intensity">
+                <ion-icon
+                  *ngFor="let star of [1,2,3,4,5]"
+                  [name]="star <= intensity ? 'star' : 'star-outline'"
+                  [color]="star <= intensity ? 'warning' : 'medium'">
+                </ion-icon>
+              </div>
+              <p *ngIf="note" class="preview-note">{{ note | slice:0:100 }}...</p>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Botones -->
+    <div class="button-group">
+      <ion-button
+        expand="block"
+        type="submit"
+        [disabled]="isLoading || !selectedEmotion"
+        color="secondary"
+        size="large">
+        <ion-spinner name="crescent" *ngIf="isLoading"></ion-spinner>
+        <span *ngIf="!isLoading">Guardar Registro</span>
+      </ion-button>
+
+      <ion-button
+        expand="block"
+        fill="outline"
+        (click)="cancel()"
+        [disabled]="isLoading">
+        Cancelar
+      </ion-button>
+    </div>
+
+  </form>
+
+</ion-content>

@@ -1,5 +1,6 @@
 const db = require('../config/database');
 
+// RF-01: Crear nuevo hábito
 exports.createHabit = async (req, res) => {
   try {
     const userId = req.userId;
@@ -14,6 +15,7 @@ exports.createHabit = async (req, res) => {
       target_count
     } = req.body;
 
+    // Validación
     if (!name) {
       return res.status(400).json({
         success: false,
@@ -21,10 +23,15 @@ exports.createHabit = async (req, res) => {
       });
     }
 
+    // ✅ Convertir specific_days a JSON string si es un array
+    const specificDaysJson = specific_days && Array.isArray(specific_days)
+      ? JSON.stringify(specific_days)
+      : null;
+
     const [result] = await db.query(
       `INSERT INTO habits
-            (user_id, name, description, icon, category_id, frequency, specific_days, priority, target_count)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      (user_id, name, description, icon, category_id, frequency, specific_days, priority, target_count)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         userId,
         name,
@@ -32,12 +39,13 @@ exports.createHabit = async (req, res) => {
         icon || 'checkmark-circle',
         category_id || null,
         frequency || 'daily',
-        specific_days ? JSON.stringify(specific_days) : null,
+        specificDaysJson, // ✅ Guardamos como string JSON
         priority || 'medium',
         target_count || 1
       ]
     );
 
+    // Crear registro de racha
     await db.query(
       'INSERT INTO habit_streaks (habit_id, user_id) VALUES (?, ?)',
       [result.insertId, userId]
@@ -60,25 +68,26 @@ exports.createHabit = async (req, res) => {
   }
 };
 
+// RF-02: Obtener todos los hábitos del usuario
 exports.getHabits = async (req, res) => {
   try {
     const userId = req.userId;
     const { is_active } = req.query;
 
     let query = `
-            SELECT
-                h.*,
-                hc.name as category_name,
-                hc.icon as category_icon,
-                hc.color as category_color,
-                hs.current_streak,
-                hs.longest_streak,
-                hs.last_completion_date
-            FROM habits h
-            LEFT JOIN habit_categories hc ON h.category_id = hc.id
-            LEFT JOIN habit_streaks hs ON h.id = hs.habit_id
-            WHERE h.user_id = ?
-        `;
+      SELECT
+        h.*,
+        hc.name as category_name,
+        hc.icon as category_icon,
+        hc.color as category_color,
+        hs.current_streak,
+        hs.longest_streak,
+        hs.last_completion_date
+      FROM habits h
+      LEFT JOIN habit_categories hc ON h.category_id = hc.id
+      LEFT JOIN habit_streaks hs ON h.id = hs.habit_id
+      WHERE h.user_id = ?
+    `;
 
     const params = [userId];
 
@@ -91,10 +100,27 @@ exports.getHabits = async (req, res) => {
 
     const [habits] = await db.query(query, params);
 
-    const habitsFormatted = habits.map(habit => ({
-      ...habit,
-      specific_days: habit.specific_days ? JSON.parse(habit.specific_days) : null
-    }));
+    // ✅ Parsear specific_days de JSON string a array
+    const habitsFormatted = habits.map(habit => {
+      let parsedSpecificDays = null;
+
+      if (habit.specific_days) {
+        try {
+          // Si es string, parsearlo
+          parsedSpecificDays = typeof habit.specific_days === 'string'
+            ? JSON.parse(habit.specific_days)
+            : habit.specific_days;
+        } catch (error) {
+          console.error('Error parsing specific_days:', error);
+          parsedSpecificDays = null;
+        }
+      }
+
+      return {
+        ...habit,
+        specific_days: parsedSpecificDays
+      };
+    });
 
     res.json({
       success: true,
@@ -110,6 +136,7 @@ exports.getHabits = async (req, res) => {
   }
 };
 
+// RF-02: Obtener un hábito específico por ID
 exports.getHabitById = async (req, res) => {
   try {
     const userId = req.userId;
@@ -117,17 +144,17 @@ exports.getHabitById = async (req, res) => {
 
     const [habits] = await db.query(
       `SELECT
-                h.*,
-                hc.name as category_name,
-                hc.icon as category_icon,
-                hc.color as category_color,
-                hs.current_streak,
-                hs.longest_streak,
-                hs.last_completion_date
-            FROM habits h
-            LEFT JOIN habit_categories hc ON h.category_id = hc.id
-            LEFT JOIN habit_streaks hs ON h.id = hs.habit_id
-            WHERE h.id = ? AND h.user_id = ?`,
+        h.*,
+        hc.name as category_name,
+        hc.icon as category_icon,
+        hc.color as category_color,
+        hs.current_streak,
+        hs.longest_streak,
+        hs.last_completion_date
+      FROM habits h
+      LEFT JOIN habit_categories hc ON h.category_id = hc.id
+      LEFT JOIN habit_streaks hs ON h.id = hs.habit_id
+      WHERE h.id = ? AND h.user_id = ?`,
       [id, userId]
     );
 
@@ -138,9 +165,22 @@ exports.getHabitById = async (req, res) => {
       });
     }
 
+    // ✅ Parsear specific_days
+    let parsedSpecificDays = null;
+    if (habits[0].specific_days) {
+      try {
+        parsedSpecificDays = typeof habits[0].specific_days === 'string'
+          ? JSON.parse(habits[0].specific_days)
+          : habits[0].specific_days;
+      } catch (error) {
+        console.error('Error parsing specific_days:', error);
+        parsedSpecificDays = null;
+      }
+    }
+
     const habit = {
       ...habits[0],
-      specific_days: habits[0].specific_days ? JSON.parse(habits[0].specific_days) : null
+      specific_days: parsedSpecificDays
     };
 
     res.json({
@@ -157,6 +197,7 @@ exports.getHabitById = async (req, res) => {
   }
 };
 
+// RF-03: Actualizar hábito
 exports.updateHabit = async (req, res) => {
   try {
     const userId = req.userId;
@@ -174,6 +215,7 @@ exports.updateHabit = async (req, res) => {
       is_paused
     } = req.body;
 
+    // Verificar que el hábito existe
     const [habits] = await db.query(
       'SELECT id FROM habits WHERE id = ? AND user_id = ?',
       [id, userId]
@@ -186,26 +228,34 @@ exports.updateHabit = async (req, res) => {
       });
     }
 
+    // ✅ Convertir specific_days a JSON string si viene como array
+    let specificDaysJson = specific_days;
+    if (specific_days !== undefined && specific_days !== null) {
+      specificDaysJson = Array.isArray(specific_days)
+        ? JSON.stringify(specific_days)
+        : specific_days;
+    }
+
     await db.query(
       `UPDATE habits SET
-                name = COALESCE(?, name),
-                description = COALESCE(?, description),
-                icon = COALESCE(?, icon),
-                category_id = COALESCE(?, category_id),
-                frequency = COALESCE(?, frequency),
-                specific_days = COALESCE(?, specific_days),
-                priority = COALESCE(?, priority),
-                target_count = COALESCE(?, target_count),
-                is_active = COALESCE(?, is_active),
-                is_paused = COALESCE(?, is_paused)
-            WHERE id = ? AND user_id = ?`,
+        name = COALESCE(?, name),
+        description = COALESCE(?, description),
+        icon = COALESCE(?, icon),
+        category_id = COALESCE(?, category_id),
+        frequency = COALESCE(?, frequency),
+        specific_days = COALESCE(?, specific_days),
+        priority = COALESCE(?, priority),
+        target_count = COALESCE(?, target_count),
+        is_active = COALESCE(?, is_active),
+        is_paused = COALESCE(?, is_paused)
+      WHERE id = ? AND user_id = ?`,
       [
         name,
         description,
         icon,
         category_id,
         frequency,
-        specific_days ? JSON.stringify(specific_days) : null,
+        specificDaysJson, // ✅ Guardamos como string JSON
         priority,
         target_count,
         is_active,
@@ -229,6 +279,7 @@ exports.updateHabit = async (req, res) => {
   }
 };
 
+// RF-04: Eliminar hábito
 exports.deleteHabit = async (req, res) => {
   try {
     const userId = req.userId;
@@ -248,15 +299,14 @@ exports.deleteHabit = async (req, res) => {
     }
 
     if (preserve_history === 'true') {
+      // Solo desactivar el hábito
       await db.query(
         'UPDATE habits SET is_active = FALSE WHERE id = ?',
         [id]
       );
     } else {
-      await db.query(
-        'DELETE FROM habits WHERE id = ?',
-        [id]
-      );
+      // Eliminar completamente
+      await db.query('DELETE FROM habits WHERE id = ?', [id]);
     }
 
     res.json({
@@ -273,6 +323,7 @@ exports.deleteHabit = async (req, res) => {
   }
 };
 
+// Pausar/Reanudar hábito
 exports.togglePauseHabit = async (req, res) => {
   try {
     const userId = req.userId;
@@ -312,6 +363,7 @@ exports.togglePauseHabit = async (req, res) => {
   }
 };
 
+// Obtener categorías de hábitos
 exports.getCategories = async (req, res) => {
   try {
     const [categories] = await db.query(

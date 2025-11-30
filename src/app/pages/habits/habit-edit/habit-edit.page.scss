@@ -1,71 +1,87 @@
-.loading-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 60vh;
-
-  ion-spinner {
-    transform: scale(1.5);
-    margin-bottom: 20px;
-  }
-
-  p {
-    color: var(--ion-color-medium);
-  }
+ion-content {
+  --background: #121212; /* fondo oscuro elegante */
+  color: #ffffff; /* texto general claro */
 }
 
+/* Ajustes a los ion-item (inputs, selects, etc.) */
 ion-item {
-  --background: white;
-  --border-radius: 10px;
-  margin-bottom: 15px;
+  --background: #1e1e1e;
+  --color: #fff;
+  --placeholder-color: rgba(255, 255, 255, 0.6);
+  --border-radius: 12px;
   --padding-start: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.05);
 
   ion-label[position="stacked"] {
     font-weight: 600;
-    color: var(--ion-color-dark);
+    color: #ffffff;
     margin-bottom: 8px;
   }
 
-  ion-input, ion-textarea, ion-select {
-    --padding-start: 10px;
+  ion-input,
+  ion-textarea,
+  ion-select {
+    color: #ffffff;
+    --placeholder-color: rgba(255, 255, 255, 0.6);
   }
 }
 
-.error-message {
-  color: var(--ion-color-danger);
-  font-size: 12px;
-  margin: -10px 0 15px 15px;
-  padding: 5px 10px;
-  background: rgba(235, 68, 90, 0.1);
-  border-radius: 5px;
-  display: inline-block;
+/* Ajustar los selectores */
+ion-select::part(placeholder) {
+  color: rgba(255, 255, 255, 0.6);
 }
 
+ion-select::part(text) {
+  color: #fff;
+}
+
+/* Mensaje de error */
+.error-message {
+  color: #ff6b6b;
+  font-size: 13px;
+  margin: -5px 0 15px 15px;
+  padding: 6px 12px;
+  background: rgba(255, 107, 107, 0.1);
+  border-radius: 8px;
+}
+
+/* Chips de selección de días */
 .days-selector {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
   padding: 15px;
+  justify-content: center;
 
   ion-chip {
-    --background: var(--ion-color-light);
-    cursor: pointer;
+    --background: #2c2c2c;
+    color: #fff;
+    font-weight: 500;
     transition: all 0.2s;
+    cursor: pointer;
 
-    &:active {
-      transform: scale(0.95);
+    &:hover {
+      --background: var(--ion-color-primary);
+      color: #fff;
+    }
+
+    &.selected {
+      --background: var(--ion-color-primary);
+      color: white;
     }
   }
 }
 
+/* Botones */
 .button-group {
   margin-top: 30px;
+  padding: 0 20px;
 
   ion-button {
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     font-weight: 600;
-    --border-radius: 10px;
+    --border-radius: 12px;
     height: 50px;
   }
 }

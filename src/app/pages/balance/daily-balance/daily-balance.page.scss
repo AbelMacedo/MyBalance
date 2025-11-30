@@ -1,0 +1,369 @@
+ion-content {
+  --background: linear-gradient(to bottom, #fff5e6, #ffffff);
+}
+
+// Header motivacional
+.balance-header {
+  text-align: center;
+  padding: 30px 20px;
+
+  ion-icon {
+    font-size: 64px;
+    margin-bottom: 15px;
+  }
+
+  h1 {
+    font-size: 28px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin: 0 0 10px 0;
+  }
+
+  p {
+    font-size: 15px;
+    color: #7f8c8d;
+    margin: 0;
+    line-height: 1.5;
+  }
+}
+
+// Secciones de preguntas
+.question-section {
+  margin-bottom: 30px;
+
+  h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    ion-icon {
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+  }
+
+  .text-area-item {
+    --background: white;
+    --border-radius: 15px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    margin-bottom: 10px;
+
+    ion-textarea {
+      --padding-top: 15px;
+      --padding-bottom: 15px;
+      --padding-start: 15px;
+      --padding-end: 15px;
+      --color: #2c3e50 !important;
+      --placeholder-color: #95a5a6;
+      --placeholder-opacity: 0.7;
+      font-size: 15px;
+      line-height: 1.6;
+      color: #2c3e50 !important;
+
+      &::part(native) {
+        color: #2c3e50 !important;
+      }
+    }
+
+    // Borde rojo cuando hay error
+    &.ion-invalid {
+      border: 2px solid var(--ion-color-danger);
+    }
+  }
+}
+
+// Mensajes de error
+.error-message {
+  color: var(--ion-color-danger);
+  font-size: 12px;
+  margin: 5px 0 15px 15px;
+  padding: 8px 12px;
+  background: rgba(235, 68, 90, 0.1);
+  border-radius: 8px;
+  display: inline-block;
+  font-weight: 500;
+}
+
+// Sección de calificación con estrellas
+.rating-section {
+  background: white;
+  border-radius: 20px;
+  padding: 25px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: 30px;
+  text-align: center;
+
+  h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    ion-icon {
+      font-size: 24px;
+    }
+  }
+
+  .stars-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 15px;
+
+    ion-icon {
+      font-size: 48px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover {
+        transform: scale(1.15);
+      }
+
+      &:active {
+        transform: scale(1.25);
+      }
+
+      // Animación sutil al seleccionar
+      &[name="star"] {
+        animation: starPulse 0.3s ease;
+      }
+    }
+  }
+
+  .rating-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ion-color-warning);
+    margin: 10px 0 0 0;
+    min-height: 24px;
+  }
+
+  .error-message {
+    margin: 15px 0 0 0;
+    display: block;
+    text-align: center;
+  }
+}
+
+// Animación para las estrellas
+@keyframes starPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+// Card de resumen
+.summary-card {
+  border-radius: 15px;
+  background: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+  overflow: hidden;
+
+  ion-card-header {
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    padding: 15px 20px;
+
+    ion-card-subtitle {
+      color: #2c3e50;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 1px;
+      margin: 0;
+    }
+  }
+
+  ion-card-content {
+    padding: 20px;
+
+    .summary-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 0;
+
+      &:not(:last-child) {
+        border-bottom: 1px solid #ecf0f1;
+        margin-bottom: 10px;
+      }
+
+      ion-icon {
+        font-size: 24px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+
+      p {
+        font-size: 14px;
+        line-height: 1.6;
+        color: #2c3e50;
+        margin: 0;
+        word-wrap: break-word;
+      }
+    }
+  }
+}
+
+// Grupo de botones
+.button-group {
+  margin-top: 20px;
+  padding-bottom: 20px;
+
+  ion-button {
+    margin-bottom: 10px;
+    font-weight: 600;
+    --border-radius: 12px;
+    height: 52px;
+    text-transform: none;
+    font-size: 16px;
+
+    &[fill="outline"] {
+      --border-width: 2px;
+    }
+
+    ion-spinner {
+      margin-right: 8px;
+    }
+  }
+}
+
+// Responsive - Tablets
+@media (max-width: 768px) {
+  .balance-header {
+    padding: 25px 15px;
+
+    ion-icon {
+      font-size: 56px;
+    }
+
+    h1 {
+      font-size: 24px;
+    }
+
+    p {
+      font-size: 14px;
+    }
+  }
+
+  .rating-section {
+    .stars-container {
+      gap: 8px;
+
+      ion-icon {
+        font-size: 42px;
+      }
+    }
+  }
+}
+
+// Responsive - Móviles pequeños
+@media (max-width: 576px) {
+  .balance-header {
+    padding: 20px 10px;
+
+    ion-icon {
+      font-size: 48px;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-size: 22px;
+    }
+
+    p {
+      font-size: 13px;
+    }
+  }
+
+  .question-section {
+    h2 {
+      font-size: 16px;
+      flex-wrap: wrap;
+
+      ion-icon {
+        font-size: 22px;
+      }
+    }
+  }
+
+  .rating-section {
+    padding: 20px;
+
+    h2 {
+      font-size: 16px;
+      flex-wrap: wrap;
+    }
+
+    .stars-container {
+      gap: 5px;
+
+      ion-icon {
+        font-size: 36px;
+      }
+    }
+
+    .rating-label {
+      font-size: 14px;
+    }
+  }
+
+  .summary-card {
+    ion-card-content {
+      padding: 15px;
+
+      .summary-item {
+        gap: 10px;
+
+        ion-icon {
+          font-size: 20px;
+        }
+
+        p {
+          font-size: 13px;
+        }
+      }
+    }
+  }
+
+  .button-group {
+    ion-button {
+      height: 48px;
+      font-size: 15px;
+    }
+  }
+}
+
+// Estados de focus para accesibilidad
+ion-textarea:focus-within {
+  outline: 2px solid var(--ion-color-warning);
+  outline-offset: 2px;
+}
+
+// Mejoras de UX
+.text-area-item {
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  }
+}
+
+.stars-container {
+  ion-icon {
+    &[name="star-outline"]:hover {
+      color: var(--ion-color-warning-tint) !important;
+    }
+  }
+}

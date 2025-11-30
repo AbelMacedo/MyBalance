@@ -1,0 +1,197 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="tertiary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tasks/list"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Nueva Tarea</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+
+  <form [formGroup]="taskForm" (ngSubmit)="onSubmit()">
+
+    <!-- Título -->
+    <ion-item lines="full">
+      <ion-label position="stacked">Título de la tarea *</ion-label>
+      <ion-input
+        type="text"
+        placeholder="Ej: Revisar correos, Hacer ejercicio..."
+        formControlName="title"
+        maxlength="200"
+        [class.ion-invalid]="isSubmitted && taskForm.get('title')?.invalid">
+      </ion-input>
+    </ion-item>
+    <div class="error-message"
+         *ngIf="isSubmitted && taskForm.get('title')?.hasError('required')">
+      El título es obligatorio
+    </div>
+
+    <!-- Descripción -->
+    <ion-item lines="full">
+      <ion-label position="stacked">Descripción (opcional)</ion-label>
+      <ion-textarea
+        rows="3"
+        placeholder="Agrega detalles sobre la tarea..."
+        formControlName="description">
+      </ion-textarea>
+    </ion-item>
+
+    <!-- Fecha -->
+    <ion-item lines="full">
+      <ion-label position="stacked">Fecha *</ion-label>
+      <ion-datetime-button datetime="task-date"></ion-datetime-button>
+
+      <ion-modal [keepContentsMounted]="true">
+        <ng-template>
+          <ion-datetime
+            id="task-date"
+            presentation="date"
+            [min]="minDate"
+            [max]="maxDate"
+            [(ngModel)]="selectedTaskDate"
+            [ngModelOptions]="{standalone: true}"
+            (ionChange)="onDateSelected($event)">
+          </ion-datetime>
+        </ng-template>
+      </ion-modal>
+    </ion-item>
+    <div class="error-message"
+         *ngIf="isSubmitted && taskForm.get('task_date')?.hasError('required')">
+      La fecha es obligatoria
+    </div>
+
+    <!-- Categoría -->
+    <ion-item lines="full">
+      <ion-label position="stacked">Categoría</ion-label>
+      <ion-select
+        placeholder="Selecciona una categoría"
+        formControlName="category_id">
+        <ion-select-option
+          *ngFor="let category of categories"
+          [value]="category.id">
+          {{ category.name }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <!-- Prioridad -->
+    <ion-item lines="full">
+      <ion-label position="stacked">Prioridad</ion-label>
+      <ion-select
+        placeholder="Selecciona prioridad"
+        formControlName="priority">
+        <ion-select-option value="high">🔴 Alta</ion-select-option>
+        <ion-select-option value="medium">🟡 Media</ion-select-option>
+        <ion-select-option value="low">🟢 Baja</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <!-- Tiempo estimado -->
+    <ion-item lines="full">
+      <ion-label position="stacked">Tiempo estimado (minutos)</ion-label>
+      <ion-input
+        type="number"
+        min="1"
+        placeholder="30"
+        formControlName="estimated_time">
+      </ion-input>
+    </ion-item>
+
+    <!-- Tarea recurrente -->
+    <ion-item lines="none">
+      <ion-label>Tarea recurrente</ion-label>
+      <ion-toggle
+        formControlName="is_recurring"
+        (ionChange)="onRecurringChange()">
+      </ion-toggle>
+    </ion-item>
+
+    <!-- Patrón de recurrencia -->
+    <ion-item lines="full" *ngIf="taskForm.get('is_recurring')?.value">
+      <ion-label position="stacked">Repetir</ion-label>
+      <ion-select
+        placeholder="Frecuencia"
+        formControlName="recurrence_pattern">
+        <ion-select-option value="daily">Diariamente</ion-select-option>
+        <ion-select-option value="weekly">Semanalmente</ion-select-option>
+        <ion-select-option value="monthly">Mensualmente</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <!-- Recordatorio -->
+    <ion-item lines="none">
+      <ion-label>Recordatorio</ion-label>
+      <ion-toggle
+        formControlName="reminder_enabled"
+        (ionChange)="onReminderChange()">
+      </ion-toggle>
+    </ion-item>
+
+    <!-- Hora del recordatorio -->
+    <ion-item lines="full" *ngIf="taskForm.get('reminder_enabled')?.value">
+      <ion-label position="stacked">Hora del recordatorio</ion-label>
+      <ion-datetime-button datetime="reminder-time"></ion-datetime-button>
+
+      <ion-modal [keepContentsMounted]="true">
+        <ng-template>
+          <ion-datetime
+            id="reminder-time"
+            presentation="time"
+            [(ngModel)]="selectedReminderTime"
+            [ngModelOptions]="{standalone: true}"
+            (ionChange)="onTimeSelected($event)">
+          </ion-datetime>
+        </ng-template>
+      </ion-modal>
+    </ion-item>
+
+    <!-- Vista previa -->
+    <ion-card class="preview-card">
+      <ion-card-header>
+        <ion-card-subtitle>Vista previa</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="preview-content">
+          <ion-icon name="checkbox-outline" color="tertiary"></ion-icon>
+          <div class="preview-info">
+            <h3>{{ taskForm.get('title')?.value || 'Título de la tarea' }}</h3>
+            <div class="preview-meta">
+              <ion-badge [color]="getPriorityColor(taskForm.get('priority')?.value)">
+                {{ getPriorityLabel(taskForm.get('priority')?.value) }}
+              </ion-badge>
+              <span *ngIf="taskForm.get('estimated_time')?.value">
+                ⏱️ {{ taskForm.get('estimated_time')?.value }} min
+              </span>
+              <span *ngIf="taskForm.get('task_date')?.value">
+                📅 {{ formatDate(taskForm.get('task_date')?.value) }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Botones -->
+    <div class="button-group">
+      <ion-button
+        expand="block"
+        type="submit"
+        [disabled]="isLoading"
+        color="tertiary">
+        <ion-spinner name="crescent" *ngIf="isLoading"></ion-spinner>
+        <span *ngIf="!isLoading">Crear Tarea</span>
+      </ion-button>
+
+      <ion-button
+        expand="block"
+        fill="outline"
+        (click)="cancel()"
+        [disabled]="isLoading">
+        Cancelar
+      </ion-button>
+    </div>
+
+  </form>
+
+</ion-content>

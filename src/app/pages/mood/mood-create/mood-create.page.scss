@@ -1,0 +1,379 @@
+ion-content {
+  --background: #fafafa;
+}
+
+// Secciones
+.section {
+  margin-bottom: 30px;
+
+  h2 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 5px;
+  }
+
+  .section-subtitle {
+    font-size: 14px;
+    color: #7f8c8d;
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+}
+
+// Grid de emociones
+.emotions-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-bottom: 20px;
+
+  .emotion-item {
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 10px;
+    border-radius: 12px;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.02);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    &.selected {
+      background: rgba(var(--ion-color-secondary-rgb), 0.1);
+
+      .emotion-circle {
+        box-shadow: 0 0 0 4px var(--ion-color-secondary);
+        transform: scale(1.1);
+      }
+
+      .emotion-name {
+        color: var(--ion-color-secondary);
+        font-weight: 700;
+      }
+    }
+
+    .emotion-circle {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 10px auto;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+      .emoji {
+        font-size: 36px;
+        user-select: none;
+      }
+    }
+
+    .emotion-name {
+      font-size: 13px;
+      color: #2c3e50;
+      margin: 0;
+      transition: all 0.3s;
+      font-weight: 500;
+    }
+  }
+}
+
+// Mensajes de error
+.error-message {
+  color: var(--ion-color-danger);
+  font-size: 13px;
+  margin-top: 10px;
+  padding: 10px 15px;
+  background: rgba(235, 68, 90, 0.1);
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 500;
+}
+
+// Selector de intensidad
+.intensity-selector {
+  background: white;
+  border-radius: 15px;
+  padding: 25px 20px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+
+  ion-range {
+    padding: 20px 0;
+
+    ion-label {
+      font-size: 24px;
+      margin: 0 10px;
+    }
+  }
+
+  .intensity-stars {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+
+    ion-icon {
+      transition: all 0.3s ease;
+
+      &:hover {
+        transform: scale(1.2);
+      }
+    }
+  }
+}
+
+// Item de nota (textarea)
+.note-item {
+  --background: white;
+  --border-radius: 15px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: 0;
+
+  ion-textarea {
+    --padding-top: 15px;
+    --padding-bottom: 15px;
+    --padding-start: 15px;
+    --padding-end: 15px;
+    --color: #2c3e50 !important;
+    --placeholder-color: #95a5a6;
+    --placeholder-opacity: 0.7;
+    font-size: 15px;
+    color: #2c3e50 !important;
+    line-height: 1.6;
+
+    &::part(native) {
+      color: #2c3e50 !important;
+    }
+  }
+
+  // Counter del textarea
+  ::part(counter) {
+    color: #7f8c8d;
+    font-size: 12px;
+    padding: 8px 15px 8px 0;
+  }
+}
+
+// Selector de etiquetas
+.tags-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+
+  ion-chip {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    border: 2px solid transparent;
+
+    &[color="secondary"] {
+      border-color: var(--ion-color-secondary);
+    }
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    ion-icon {
+      margin-right: 5px;
+    }
+
+    ion-label {
+      color: inherit !important;
+      font-size: 13px;
+    }
+  }
+}
+
+// Sección de vista previa
+.preview-section {
+  margin-top: 30px;
+}
+
+// Card de vista previa
+.preview-card {
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: white;
+
+  ion-card-header {
+    ion-card-subtitle {
+      color: #7f8c8d;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 1px;
+    }
+  }
+
+  ion-card-content {
+    padding: 20px;
+  }
+
+  .preview-content {
+    display: flex;
+    gap: 15px;
+    align-items: flex-start;
+
+    .preview-emotion {
+      width: 60px;
+      height: 60px;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+      .emoji {
+        font-size: 32px;
+        user-select: none;
+      }
+    }
+
+    .preview-info {
+      flex: 1;
+      min-width: 0;
+
+      h3 {
+        font-size: 18px;
+        font-weight: 600;
+        margin: 0 0 10px 0;
+        color: #2c3e50;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .preview-intensity {
+        display: flex;
+        gap: 5px;
+        margin-bottom: 10px;
+
+        ion-icon {
+          font-size: 16px;
+          transition: transform 0.2s;
+        }
+      }
+
+      .preview-note {
+        font-size: 14px;
+        color: #7f8c8d;
+        line-height: 1.6;
+        margin: 0;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+    }
+  }
+}
+
+// Grupo de botones
+.button-group {
+  margin-top: 30px;
+  margin-bottom: 20px;
+
+  ion-button {
+    margin-bottom: 10px;
+    font-weight: 600;
+    --border-radius: 12px;
+    height: 52px;
+    text-transform: none;
+    font-size: 16px;
+
+    &[fill="outline"] {
+      --border-width: 2px;
+    }
+
+    ion-spinner {
+      margin-right: 8px;
+    }
+  }
+}
+
+// Responsive - Tablets y móviles pequeños
+@media (max-width: 768px) {
+  .emotions-grid {
+    gap: 12px;
+
+    .emotion-item {
+      .emotion-circle {
+        width: 60px;
+        height: 60px;
+
+        .emoji {
+          font-size: 30px;
+        }
+      }
+
+      .emotion-name {
+        font-size: 12px;
+      }
+    }
+  }
+
+  .preview-card {
+    .preview-content {
+      .preview-emotion {
+        width: 50px;
+        height: 50px;
+
+        .emoji {
+          font-size: 28px;
+        }
+      }
+
+      .preview-info {
+        h3 {
+          font-size: 16px;
+        }
+
+        .preview-intensity {
+          ion-icon {
+            font-size: 14px;
+          }
+        }
+
+        .preview-note {
+          font-size: 13px;
+        }
+      }
+    }
+  }
+}
+
+// Móviles muy pequeños
+@media (max-width: 360px) {
+  .emotions-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+
+    .emotion-item {
+      .emotion-circle {
+        width: 65px;
+        height: 65px;
+      }
+    }
+  }
+
+  .tags-selector {
+    gap: 8px;
+
+    ion-chip {
+      font-size: 12px;
+    }
+  }
+}

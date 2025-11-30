@@ -66,4 +66,5 @@ export class ApiService {
     console.error('Error en API:', errorMessage);
     return throwError(() => new Error(errorMessage));
   }
+
 }

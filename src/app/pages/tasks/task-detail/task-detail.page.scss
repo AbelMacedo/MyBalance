@@ -1,0 +1,166 @@
+ion-content {
+  --background: #f5f5f5;
+}
+
+// Loading container
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60vh;
+
+  ion-spinner {
+    transform: scale(1.5);
+  }
+}
+
+// Header de la tarea
+.task-header {
+  padding: 40px 20px;
+  text-align: center;
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  color: white;
+  position: relative;
+  overflow: hidden;
+
+  // Estado completado
+  &.completed {
+    background: linear-gradient(135deg, #a8e6cf 0%, #56ab2f 100%);
+  }
+
+  ion-icon {
+    font-size: 80px;
+    margin-bottom: 15px;
+    color: white;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+  }
+
+  h1 {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0 0 15px 0;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    line-height: 1.3;
+    padding: 0 10px;
+  }
+
+  .task-badges {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 15px;
+
+    ion-badge {
+      padding: 6px 12px;
+      font-weight: 600;
+      font-size: 12px;
+      border-radius: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
+      // Asegurar que el texto sea visible en badges personalizados
+      &[style*="--background"] {
+        color: white;
+      }
+    }
+  }
+}
+
+// Secciones de detalle
+.detail-section {
+  margin-bottom: 20px;
+
+  h2 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #2c3e50;
+  }
+
+  // Card de descripción
+  ion-card {
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    background: white;
+    margin: 0;
+
+    ion-card-content {
+      padding: 20px;
+
+      p {
+        line-height: 1.6;
+        margin: 0;
+        color: #2c3e50;
+        font-size: 15px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+      }
+    }
+  }
+
+  // Lista de información
+  ion-list {
+    background: transparent;
+    padding: 0;
+
+    ion-item {
+      --background: white;
+      --border-radius: 12px;
+      --padding-start: 15px;
+      --padding-end: 15px;
+      --inner-padding-end: 15px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+      ion-icon {
+        font-size: 24px;
+        margin-right: 15px;
+      }
+
+      ion-label {
+        margin: 12px 0;
+
+        h3 {
+          font-weight: 600;
+          font-size: 14px;
+          color: #2c3e50;
+          margin: 0 0 5px 0;
+        }
+
+        p {
+          font-size: 13px;
+          color: #7f8c8d;
+          margin: 0;
+          line-height: 1.4;
+        }
+      }
+    }
+  }
+}
+
+// Sección de acción (botón principal)
+.action-section {
+  padding-top: 10px;
+  padding-bottom: 30px;
+
+  ion-button {
+    --border-radius: 12px;
+    height: 52px;
+    font-weight: 600;
+    text-transform: none;
+    font-size: 16px;
+
+    ion-icon {
+      margin-right: 8px;
+      font-size: 24px;
+    }
+  }
+}
+
+// Mejoras para los badges con colores personalizados
+ion-badge {
+  ion-label {
+    color: inherit !important;
+  }
+}

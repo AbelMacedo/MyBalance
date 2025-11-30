@@ -1,0 +1,199 @@
+.points-summary {
+  .summary-card {
+    border-radius: 20px;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    box-shadow: 0 4px 20px rgba(240, 147, 251, 0.4);
+    text-align: center;
+
+    .level-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 10px;
+
+      ion-icon {
+        font-size: 48px;
+      }
+
+      h2 {
+        font-size: 32px;
+        font-weight: bold;
+        margin: 0;
+      }
+    }
+
+    h3 {
+      font-size: 20px;
+      margin: 0 0 15px 0;
+    }
+
+    ion-progress-bar {
+      height: 10px;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 13px;
+      margin: 0;
+      opacity: 0.9;
+    }
+  }
+}
+
+.achievements-section {
+  h2 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: var(--ion-color-dark);
+  }
+
+  .achievements-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+
+    .achievement-card {
+      border-radius: 15px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s;
+
+      &.unlocked {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+
+        &:active {
+          transform: scale(0.95);
+        }
+      }
+
+      &.locked {
+        opacity: 0.6;
+        filter: grayscale(80%);
+      }
+
+      &.common {
+        border-top: 3px solid #9E9E9E;
+      }
+
+      &.rare {
+        border-top: 3px solid #2196F3;
+      }
+
+      &.epic {
+        border-top: 3px solid #9C27B0;
+      }
+
+      &.legendary {
+        border-top: 3px solid #FF9800;
+      }
+
+      ion-card-content {
+        text-align: center;
+        padding: 20px 15px;
+
+        .achievement-icon {
+          width: 60px;
+          height: 60px;
+          margin: 0 auto 10px auto;
+          background: var(--ion-color-light);
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          ion-icon {
+            font-size: 32px;
+            color: var(--ion-color-dark);
+          }
+        }
+
+        h3 {
+          font-size: 14px;
+          font-weight: 600;
+          margin: 0 0 8px 0;
+          color: var(--ion-color-dark);
+        }
+
+        p {
+          font-size: 12px;
+          line-height: 1.4;
+          color: var(--ion-color-medium);
+          margin: 0 0 10px 0;
+          min-height: 40px;
+        }
+
+        .achievement-footer {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+
+          ion-badge {
+            font-size: 10px;
+          }
+
+          .points {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--ion-color-warning);
+          }
+        }
+
+        .unlocked-date {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 5px;
+          margin-top: 10px;
+          font-size: 11px;
+          color: var(--ion-color-success);
+
+          ion-icon {
+            font-size: 14px;
+          }
+        }
+
+        .locked-overlay {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+
+          ion-icon {
+            font-size: 48px;
+            color: var(--ion-color-medium);
+            opacity: 0.3;
+          }
+        }
+      }
+    }
+  }
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+
+  ion-icon {
+    font-size: 80px;
+    margin-bottom: 20px;
+  }
+
+  h3 {
+    font-size: 20px;
+    color: var(--ion-color-dark);
+  }
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  padding: 60px 0;
+
+  ion-spinner {
+    transform: scale(1.5);
+  }
+}

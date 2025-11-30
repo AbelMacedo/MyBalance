@@ -37,7 +37,6 @@ export class HabitDetailPage implements OnInit {
     this.isLoading = true;
 
     try {
-      // Cargar hábito
       const habitRequest = await this.habitService.getHabitById(habitId);
       habitRequest.subscribe({
         next: (response) => {

@@ -1,0 +1,83 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="warning">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/wellness/challenges"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Mis Logros</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <!-- Resumen de puntos -->
+  <div class="points-summary ion-padding" *ngIf="userPoints">
+    <ion-card class="summary-card">
+      <ion-card-content>
+        <div class="level-badge">
+          <ion-icon name="star" color="warning"></ion-icon>
+          <h2>Nivel {{ userPoints.level }}</h2>
+        </div>
+        <h3>{{ userPoints.total_points }} Puntos Totales</h3>
+        <ion-progress-bar
+          [value]="userPoints.current_level_points / 100"
+          color="warning">
+        </ion-progress-bar>
+        <p>{{ userPoints.points_to_next_level }} puntos para el próximo nivel</p>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Logros -->
+  <div class="achievements-section ion-padding">
+    <h2>Tus Logros ({{ unlockedCount }}/{{ achievements.length }})</h2>
+
+    <div class="achievements-grid">
+      <ion-card
+        *ngFor="let achievement of achievements"
+        class="achievement-card"
+        [class.unlocked]="achievement.is_unlocked"
+        [class.locked]="!achievement.is_unlocked"
+        [class.common]="achievement.rarity === 'common'"
+        [class.rare]="achievement.rarity === 'rare'"
+        [class.epic]="achievement.rarity === 'epic'"
+        [class.legendary]="achievement.rarity === 'legendary'">
+        <ion-card-content>
+          <div class="achievement-icon">
+            <ion-icon [name]="achievement.icon"></ion-icon>
+          </div>
+
+          <h3>{{ achievement.name }}</h3>
+          <p>{{ achievement.description }}</p>
+
+          <div class="achievement-footer">
+            <ion-badge [color]="getRarityColor(achievement.rarity)">
+              {{ getRarityLabel(achievement.rarity) }}
+            </ion-badge>
+            <span class="points">{{ achievement.points }} pts</span>
+          </div>
+
+          <div class="unlocked-date" *ngIf="achievement.is_unlocked && achievement.unlocked_at">
+            <ion-icon name="checkmark-circle" color="success"></ion-icon>
+            <span>{{ formatDate(achievement.unlocked_at) }}</span>
+          </div>
+
+          <div class="locked-overlay" *ngIf="!achievement.is_unlocked">
+            <ion-icon name="lock-closed"></ion-icon>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Estado vacío -->
+    <div *ngIf="achievements.length === 0 && !isLoading" class="empty-state">
+      <ion-icon name="trophy-outline" color="medium"></ion-icon>
+      <h3>No hay logros disponibles</h3>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="loading-container">
+    <ion-spinner color="warning"></ion-spinner>
+  </div>
+
+</ion-content>

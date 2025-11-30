@@ -1,0 +1,209 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="warning">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Retos de Bienestar</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="goToAchievements()">
+        <ion-icon name="trophy" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <!-- Tabs -->
+  <ion-toolbar>
+    <ion-segment [(ngModel)]="selectedTab" (ionChange)="onTabChange()">
+      <ion-segment-button value="available">
+        <ion-label>Disponibles</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="active">
+        <ion-label>Activos</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="completed">
+        <ion-label>Completados</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <!-- Puntos del usuario -->
+  <div class="points-section ion-padding" *ngIf="userPoints">
+    <ion-card class="points-card">
+      <ion-card-content>
+        <div class="points-header">
+          <div>
+            <h3>Nivel {{ userPoints.level }}</h3>
+            <p>{{ userPoints.total_points }} puntos totales</p>
+          </div>
+          <ion-icon name="star" color="warning"></ion-icon>
+        </div>
+
+        <ion-progress-bar [value]="userPoints.current_level_points / 100" color="warning">
+        </ion-progress-bar>
+
+        <p class="progress-text">
+          {{ userPoints.current_level_points }}/100 -
+          {{ userPoints.points_to_next_level }} puntos para nivel {{ userPoints.level + 1 }}
+        </p>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Retos Disponibles -->
+  <div *ngIf="selectedTab === 'available'" class="challenges-list ion-padding">
+    <h2>Únete a un Reto</h2>
+
+    <ion-card *ngFor="let challenge of availableChallenges" class="challenge-card"
+      [class.easy]="challenge.difficulty === 'easy'" [class.medium]="challenge.difficulty === 'medium'"
+      [class.hard]="challenge.difficulty === 'hard'">
+      <ion-card-content>
+        <div class="challenge-header">
+          <ion-chip [style.--background]="challenge.category_color">
+            <ion-icon [name]="challenge.category_icon"></ion-icon>
+            <ion-label>{{ challenge.category_name }}</ion-label>
+          </ion-chip>
+          <ion-badge [color]="getDifficultyColor(challenge.difficulty)">
+            {{ getDifficultyLabel(challenge.difficulty) }}
+          </ion-badge>
+        </div>
+
+        <h3>{{ challenge.title }}</h3>
+        <p>{{ challenge.description }}</p>
+
+        <div class="challenge-info">
+          <div class="info-item">
+            <ion-icon name="calendar"></ion-icon>
+            <span>{{ challenge.duration_days }} días</span>
+          </div>
+          <div class="info-item">
+            <ion-icon name="trophy"></ion-icon>
+            <span>{{ challenge.points }} puntos</span>
+          </div>
+          <div class="info-item">
+            <ion-icon name="time"></ion-icon>
+            <span>{{ getTypeLabel(challenge.type) }}</span>
+          </div>
+        </div>
+
+        <ion-button expand="block" [color]="getDifficultyColor(challenge.difficulty)"
+          (click)="joinChallenge(challenge)">
+          <ion-icon name="add-circle" slot="start"></ion-icon>
+          Unirse al Reto
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Estado vacío -->
+    <div *ngIf="availableChallenges.length === 0 && !isLoading" class="empty-state">
+      <ion-icon name="fitness-outline" color="medium"></ion-icon>
+      <h3>No hay retos disponibles</h3>
+      <p>Vuelve más tarde para nuevos desafíos</p>
+    </div>
+  </div>
+
+  <!-- Retos Activos -->
+  <div *ngIf="selectedTab === 'active'" class="challenges-list ion-padding">
+    <h2>Mis Retos Activos</h2>
+
+    <ion-card *ngFor="let challenge of activeChallenges" class="challenge-card active"
+      (click)="goToDetail(challenge.id)">
+      <ion-card-content>
+        <div class="challenge-header">
+          <ion-chip [style.--background]="challenge.category_color">
+            <ion-icon [name]="challenge.category_icon"></ion-icon>
+            <ion-label>{{ challenge.category_name }}</ion-label>
+          </ion-chip>
+          <ion-badge color="primary">
+            {{ challenge.days_remaining }} días restantes
+          </ion-badge>
+        </div>
+
+        <h3>{{ challenge.title }}</h3>
+
+        <div class="progress-section">
+          <div class="progress-header">
+            <span>Progreso</span>
+            <!-- ✅ PROTECCIÓN AQUÍ -->
+
+            <span>{{ ((+challenge.progress_percentage) || 0).toFixed(0) }}%</span>
+          </div>
+          <ion-progress-bar [value]="((+challenge.progress_percentage) || 0) / 100" color="success">
+          </ion-progress-bar>
+        </div>
+
+        <div class="challenge-stats">
+          <div class="stat">
+            <ion-icon name="flame" color="danger"></ion-icon>
+            <!-- ✅ PROTECCIÓN AQUÍ TAMBIÉN -->
+            <span>{{ challenge.current_streak || 0 }} días seguidos</span>
+          </div>
+          <div class="stat">
+            <ion-icon name="trophy" color="warning"></ion-icon>
+            <span>{{ challenge.points }} puntos</span>
+          </div>
+        </div>
+
+        <ion-button expand="block" fill="outline" (click)="markTodayProgress(challenge); $event.stopPropagation()">
+          <ion-icon name="checkmark-circle" slot="start"></ion-icon>
+          Marcar Hoy
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Estado vacío -->
+    <div *ngIf="activeChallenges.length === 0 && !isLoading" class="empty-state">
+      <ion-icon name="barbell-outline" color="medium"></ion-icon>
+      <h3>No tienes retos activos</h3>
+      <p>Únete a un reto para empezar</p>
+      <ion-button (click)="selectedTab = 'available'; onTabChange()">
+        Ver Retos Disponibles
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- Retos Completados -->
+  <div *ngIf="selectedTab === 'completed'" class="challenges-list ion-padding">
+    <h2>Retos Completados 🎉</h2>
+
+    <ion-card *ngFor="let challenge of completedChallenges" class="challenge-card completed">
+      <ion-card-content>
+        <div class="challenge-header">
+          <ion-chip [style.--background]="challenge.category_color">
+            <ion-icon [name]="challenge.category_icon"></ion-icon>
+            <ion-label>{{ challenge.category_name }}</ion-label>
+          </ion-chip>
+          <ion-icon name="checkmark-circle" color="success" size="large"></ion-icon>
+        </div>
+
+        <h3>{{ challenge.title }}</h3>
+
+        <div class="completed-info">
+          <p>
+            <ion-icon name="trophy" color="warning"></ion-icon>
+            Ganaste {{ challenge.points }} puntos
+          </p>
+          <p>
+            <ion-icon name="calendar"></ion-icon>
+            Completado: {{ formatDate(challenge.completed_at) }}
+          </p>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Estado vacío -->
+    <div *ngIf="completedChallenges.length === 0 && !isLoading" class="empty-state">
+      <ion-icon name="ribbon-outline" color="medium"></ion-icon>
+      <h3>Aún no has completado ningún reto</h3>
+      <p>¡Completa tu primer reto y gana puntos!</p>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="loading-container">
+    <ion-spinner color="warning"></ion-spinner>
+  </div>
+
+</ion-content>

@@ -1,0 +1,229 @@
+ion-toolbar {
+  --background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+
+  ion-spinner {
+    transform: scale(1.5);
+    margin-bottom: 20px;
+  }
+
+  p {
+    color: var(--ion-color-medium);
+  }
+}
+
+.mood-thermometer {
+  margin-top: -10px;
+
+  .thermometer-card {
+    border-radius: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+
+    .thermometer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+
+      h2 {
+        font-size: 18px;
+        font-weight: 600;
+        margin: 0;
+      }
+
+      ion-icon {
+        font-size: 32px;
+      }
+    }
+
+    .score-display {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+
+      .score-circle {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.2);
+        flex-shrink: 0;
+
+        .score-number {
+          font-size: 36px;
+          font-weight: bold;
+        }
+
+        .score-label {
+          font-size: 14px;
+          opacity: 0.8;
+        }
+      }
+
+      .score-info {
+        flex: 1;
+
+        p {
+          margin: 5px 0;
+          font-size: 14px;
+        }
+
+        .score-change {
+          font-size: 16px;
+          font-weight: 600;
+        }
+
+        .score-previous {
+          opacity: 0.8;
+          font-size: 13px;
+        }
+      }
+    }
+  }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+  text-align: center;
+
+  ion-icon {
+    font-size: 100px;
+    margin-bottom: 20px;
+  }
+
+  h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--ion-color-dark);
+  }
+
+  p {
+    color: var(--ion-color-medium);
+    margin-bottom: 30px;
+    max-width: 300px;
+  }
+
+  ion-button {
+    max-width: 300px;
+  }
+}
+
+.date-header {
+  margin: 20px 0 15px 0;
+
+  h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ion-color-medium);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0;
+  }
+}
+
+.mood-card {
+  border-radius: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s;
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  .mood-card-content {
+    display: flex;
+    gap: 15px;
+    align-items: flex-start;
+
+    .mood-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+
+      .emoji {
+        font-size: 32px;
+      }
+    }
+
+    .mood-info {
+      flex: 1;
+
+      h4 {
+        font-size: 18px;
+        font-weight: 600;
+        margin: 0 0 5px 0;
+        color: var(--ion-color-dark);
+      }
+
+      .mood-time {
+        font-size: 13px;
+        color: var(--ion-color-medium);
+        margin: 0 0 10px 0;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+
+        ion-icon {
+          font-size: 14px;
+        }
+      }
+
+      .intensity-bar {
+        display: flex;
+        gap: 3px;
+        margin-bottom: 10px;
+
+        ion-icon {
+          font-size: 16px;
+        }
+      }
+
+      .mood-note {
+        font-size: 14px;
+        color: var(--ion-color-dark);
+        line-height: 1.5;
+        margin: 10px 0;
+      }
+
+      .mood-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        margin-top: 10px;
+
+        ion-chip {
+          --background: var(--ion-color-light);
+          height: 24px;
+          font-size: 11px;
+        }
+      }
+    }
+  }
+}
+
+ion-fab-button {
+  --box-shadow: 0 4px 16px rgba(245, 87, 108, 0.4);
+  --background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}

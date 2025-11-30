@@ -1,0 +1,147 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="secondary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Diario Emocional</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="goToStats()">
+        <ion-icon name="stats-chart-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <!-- Filtros -->
+  <ion-toolbar>
+    <ion-segment [(ngModel)]="filterPeriod" (ionChange)="onFilterChange()">
+      <ion-segment-button value="today">
+        <ion-label>Hoy</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="week">
+        <ion-label>Semana</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="month">
+        <ion-label>Mes</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="all">
+        <ion-label>Todos</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="loading-container">
+    <ion-spinner color="secondary"></ion-spinner>
+    <p>Cargando registros...</p>
+  </div>
+
+  <!-- Termómetro emocional -->
+  <div class="mood-thermometer ion-padding" *ngIf="!isLoading && weeklyScore">
+    <ion-card class="thermometer-card">
+      <ion-card-content>
+        <div class="thermometer-header">
+          <h2>Estado Emocional Semanal</h2>
+          <ion-icon [name]="getTrendIcon()" [color]="getTrendColor()">
+          </ion-icon>
+        </div>
+
+        <div class="score-display">
+          <div class="score-circle" [style.background]="getScoreColor()">
+            <span class="score-number">{{ weeklyScore.current_week.score }}</span>
+            <span class="score-label">/5</span>
+          </div>
+
+          <div class="score-info">
+            <p class="score-change">
+              {{ (+weeklyScore.difference) > 0 ? '+' : '' }}{{ (+weeklyScore.difference) }}
+              desde la semana pasada
+            </p>
+            <p class="score-previous">
+              Anterior: {{ weeklyScore.previous_week.score }}/5
+            </p>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Lista vacía -->
+  <div *ngIf="!isLoading && moodEntries.length === 0" class="empty-state ion-padding">
+    <ion-icon name="happy-outline" color="medium"></ion-icon>
+    <h2>Sin registros emocionales</h2>
+    <p>Comienza a registrar cómo te sientes cada día</p>
+    <ion-button expand="block" (click)="goToCreate()">
+      <ion-icon name="add-circle-outline" slot="start"></ion-icon>
+      Registrar Estado de Ánimo
+    </ion-button>
+  </div>
+
+  <!-- Lista de registros -->
+  <div class="entries-list ion-padding" *ngIf="!isLoading && moodEntries.length > 0">
+
+    <!-- Agrupado por fecha -->
+    <div *ngFor="let group of groupedEntries">
+      <div class="date-header">
+        <h3>{{ formatDateHeader(group.date) }}</h3>
+      </div>
+
+      <ion-card *ngFor="let entry of group.entries" class="mood-card" (click)="goToDetail(entry.id)">
+        <ion-card-content>
+          <div class="mood-card-content">
+
+            <!-- Emoji y categoría -->
+            <div class="mood-icon" [style.background]="entry.emotion_color">
+              <span class="emoji">{{ entry.emotion_emoji }}</span>
+            </div>
+
+            <!-- Información -->
+            <div class="mood-info">
+              <h4>{{ entry.emotion_name }}</h4>
+              <p class="mood-time">
+                <ion-icon name="time-outline"></ion-icon>
+                {{ formatTime(entry.entry_time) }}
+              </p>
+
+              <!-- Intensidad -->
+              <div class="intensity-bar">
+                <ion-icon *ngFor="let star of [1,2,3,4,5]" [name]="star <= entry.intensity ? 'star' : 'star-outline'"
+                  [color]="star <= entry.intensity ? 'warning' : 'medium'">
+                </ion-icon>
+              </div>
+
+              <!-- Nota (preview) -->
+              <p class="mood-note" *ngIf="entry.note">
+                {{ entry.note | slice:0:80 }}{{ entry.note.length > 80 ? '...' : '' }}
+              </p>
+
+              <!-- Etiquetas -->
+              <div class="mood-tags" *ngIf="entry.tags && entry.tags.length > 0">
+                <ion-chip *ngFor="let tag of entry.tags" size="small">
+                  <ion-label>{{ tag }}</ion-label>
+                </ion-chip>
+              </div>
+            </div>
+
+            <!-- Botón de opciones -->
+            <ion-button fill="clear" size="small" (click)="openOptionsMenu(entry, $event)">
+              <ion-icon name="ellipsis-vertical" slot="icon-only"></ion-icon>
+            </ion-button>
+
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+  </div>
+
+  <!-- FAB para crear registro -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="goToCreate()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+</ion-content>

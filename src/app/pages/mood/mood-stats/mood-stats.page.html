@@ -1,0 +1,200 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="secondary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/mood/list"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Estadísticas Emocionales</ion-title>
+  </ion-toolbar>
+
+  <!-- Selector de período -->
+  <ion-toolbar>
+    <ion-segment [(ngModel)]="selectedPeriod" (ionChange)="onPeriodChange()">
+      <ion-segment-button value="week">
+        <ion-label>Semana</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="month">
+        <ion-label>Mes</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="year">
+        <ion-label>Año</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="loading-container">
+    <ion-spinner color="secondary"></ion-spinner>
+    <p>Cargando estadísticas...</p>
+  </div>
+
+  <!-- Sin datos -->
+  <div *ngIf="!isLoading && !trends" class="empty-state ion-padding">
+    <ion-icon name="stats-chart-outline" color="medium"></ion-icon>
+    <h2>Sin datos suficientes</h2>
+    <p>Registra más estados de ánimo para ver tus estadísticas</p>
+    <ion-button expand="block" routerLink="/mood/create">
+      <ion-icon name="add-circle" slot="start"></ion-icon>
+      Registrar Estado de Ánimo
+    </ion-button>
+  </div>
+
+  <!-- Estadísticas -->
+  <div *ngIf="!isLoading && trends" class="stats-container">
+
+    <!-- Resumen general -->
+    <div class="summary-section ion-padding">
+      <h2>Resumen del Período</h2>
+      <ion-card class="summary-card">
+        <ion-card-content>
+          <div class="summary-grid">
+            <div class="summary-item">
+              <ion-icon name="calendar" color="primary"></ion-icon>
+              <div class="summary-info">
+                <h3>{{ getTotalDays() }}</h3>
+                <p>Días registrados</p>
+              </div>
+            </div>
+
+            <div class="summary-item">
+              <ion-icon name="happy" color="secondary"></ion-icon>
+              <div class="summary-info">
+                <h3>{{ trends.average_intensity.toFixed(1) }}</h3>
+                <p>Promedio general</p>
+              </div>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Distribución por categoría -->
+    <div class="category-section ion-padding">
+      <h2>Distribución por Categoría</h2>
+
+      <div class="category-cards">
+        <ion-card
+          *ngFor="let category of trends.category_stats"
+          class="category-card"
+          [class.positive]="category.category === 'positive'"
+          [class.neutral]="category.category === 'neutral'"
+          [class.negative]="category.category === 'negative'">
+          <ion-card-content>
+            <div class="category-header">
+              <span class="category-emoji">{{ getCategoryEmoji(category.category) }}</span>
+              <h3>{{ getCategoryName(category.category) }}</h3>
+            </div>
+
+            <div class="category-stats">
+              <div class="stat">
+                <span class="stat-value">{{ category.count }}</span>
+                <span class="stat-label">registros</span>
+              </div>
+              <div class="stat">
+                <span class="stat-value">{{ getPercentage(category.count) }}%</span>
+                <span class="stat-label">del total</span>
+              </div>
+              <div class="stat">
+                <span class="stat-value">{{ category.avg_intensity.toFixed(1) }}</span>
+                <span class="stat-label">intensidad</span>
+              </div>
+            </div>
+
+            <!-- Barra de progreso -->
+            <ion-progress-bar
+              [value]="getPercentage(category.count) / 100"
+              [color]="getCategoryColor(category.category)">
+            </ion-progress-bar>
+          </ion-card-content>
+        </ion-card>
+      </div>
+    </div>
+
+    <!-- Top 5 emociones -->
+    <div class="top-emotions-section ion-padding">
+      <h2>Emociones Más Frecuentes</h2>
+
+      <ion-card class="top-emotions-card">
+        <ion-card-content>
+          <div
+            *ngFor="let emotion of trends.top_emotions; let i = index"
+            class="emotion-item">
+            <div class="emotion-rank">
+              <span class="rank-number">{{ i + 1 }}</span>
+            </div>
+
+            <div class="emotion-icon" [style.background]="emotion.color">
+              <span class="emoji">{{ emotion.emoji }}</span>
+            </div>
+
+            <div class="emotion-info">
+              <h4>{{ emotion.name }}</h4>
+              <p>{{ emotion.count }} {{ emotion.count === 1 ? 'vez' : 'veces' }}</p>
+            </div>
+
+            <ion-badge [color]="getCategoryColorBadge(emotion.category)">
+              {{ getPercentage(emotion.count) }}%
+            </ion-badge>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Tendencia diaria (visual simple) -->
+    <div class="trend-section ion-padding">
+      <h2>Tendencia Temporal</h2>
+
+      <ion-card class="trend-card">
+        <ion-card-content>
+          <div class="trend-chart">
+            <div
+              *ngFor="let day of getDailyAverages()"
+              class="trend-bar"
+              [style.height.%]="(day.avg / 5) * 100"
+              [class.positive]="day.avg >= 3.5"
+              [class.neutral]="day.avg >= 2.5 && day.avg < 3.5"
+              [class.negative]="day.avg < 2.5">
+              <div class="bar-tooltip">
+                {{ day.date | date:'dd/MM' }}<br>
+                {{ day.avg.toFixed(1) }}
+              </div>
+            </div>
+          </div>
+
+          <div class="trend-legend">
+            <div class="legend-item">
+              <div class="legend-color positive"></div>
+              <span>Positivo (≥3.5)</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color neutral"></div>
+              <span>Neutral (2.5-3.4)</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color negative"></div>
+              <span>Negativo (<2.5)</span>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Insights -->
+    <div class="insights-section ion-padding">
+      <h2>Análisis</h2>
+
+      <ion-card class="insights-card">
+        <ion-card-content>
+          <div class="insight-item" *ngFor="let insight of getInsights()">
+            <ion-icon [name]="insight.icon" [color]="insight.color"></ion-icon>
+            <p>{{ insight.message }}</p>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+  </div>
+
+</ion-content>

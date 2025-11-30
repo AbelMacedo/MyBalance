@@ -1,0 +1,102 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="secondary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/mood/list"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Detalle del Registro</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="openOptionsMenu()">
+        <ion-icon name="ellipsis-vertical" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="loading-container">
+    <ion-spinner color="secondary"></ion-spinner>
+  </div>
+
+  <!-- Contenido -->
+  <div *ngIf="!isLoading && entry">
+
+    <!-- Header emocional -->
+    <div class="emotion-header" [style.background]="entry.emotion_color">
+      <div class="emotion-icon-large">
+        <span class="emoji">{{ entry.emotion_emoji }}</span>
+      </div>
+      <h1>{{ entry.emotion_name }}</h1>
+
+      <!-- Intensidad -->
+      <div class="intensity-display">
+        <ion-icon
+          *ngFor="let star of [1,2,3,4,5]"
+          [name]="star <= entry.intensity ? 'star' : 'star-outline'"
+          color="light">
+        </ion-icon>
+      </div>
+
+      <!-- Fecha y hora -->
+      <p class="entry-datetime">
+        <ion-icon name="calendar-outline"></ion-icon>
+        {{ formatDate(entry.entry_date) }}
+        <ion-icon name="time-outline"></ion-icon>
+        {{ formatTime(entry.entry_time) }}
+      </p>
+    </div>
+
+    <!-- Nota -->
+    <div class="note-section ion-padding" *ngIf="entry.note">
+      <h2>Notas</h2>
+      <ion-card class="note-card">
+        <ion-card-content>
+          <p>{{ entry.note }}</p>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Etiquetas -->
+    <div class="tags-section ion-padding" *ngIf="entry.tag_names && entry.tag_names.length > 0">
+      <h2>Etiquetas</h2>
+      <div class="tags-display">
+        <ion-chip *ngFor="let tag of entry.tag_names" color="secondary">
+          <ion-label>{{ tag }}</ion-label>
+        </ion-chip>
+      </div>
+    </div>
+
+    <!-- Información adicional -->
+    <div class="info-section ion-padding">
+      <h2>Información</h2>
+      <ion-list>
+        <ion-item>
+          <ion-icon name="bookmark" slot="start" color="secondary"></ion-icon>
+          <ion-label>
+            <h3>Categoría</h3>
+            <p>{{ getCategoryName(entry.emotion_category) }}</p>
+          </ion-label>
+        </ion-item>
+
+        <ion-item>
+          <ion-icon name="bar-chart" slot="start" color="secondary"></ion-icon>
+          <ion-label>
+            <h3>Intensidad</h3>
+            <p>{{ entry.intensity }}/5 - {{ getIntensityLabel(entry.intensity) }}</p>
+          </ion-label>
+        </ion-item>
+
+        <ion-item>
+          <ion-icon name="time" slot="start" color="secondary"></ion-icon>
+          <ion-label>
+            <h3>Registrado</h3>
+            <p>{{ formatFullDate(entry.created_at) }}</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </div>
+
+  </div>
+
+</ion-content>

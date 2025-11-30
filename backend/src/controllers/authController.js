@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const db = require('../config/database');
+const emailService = require('../services/emailService');
 
 const generateToken = (userId) => {
     return jwt.sign({ id: userId }, process.env.JWT_SECRET, {
@@ -160,7 +161,7 @@ exports.requestPasswordReset = async (req, res) => {
         const { email } = req.body;
 
         const [users] = await db.query(
-            'SELECT id FROM users WHERE email = ?',
+            'SELECT id, email FROM users WHERE email = ?',
             [email]
         );
 
@@ -171,17 +172,23 @@ exports.requestPasswordReset = async (req, res) => {
             return res.json({ success: true, message });
         }
 
-        const userId = users[0].id;
-        const resetToken = jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const user = users[0];
+        const resetToken = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
         const expiresAt = new Date(Date.now() + 3600000); // 1 hora
 
         await db.query(
             'INSERT INTO password_reset_tokens (user_id, token, expires_at) VALUES (?, ?, ?)',
-            [userId, resetToken, expiresAt]
+            [user.id, resetToken, expiresAt]
         );
 
-        // Aquí integrarías servicio de email (NodeMailer, SendGrid, etc.)
-        console.log('Token de recuperación:', resetToken);
+        // ENVIAR EMAIL
+        try {
+            await emailService.sendPasswordResetEmail(user.email, resetToken);
+            console.log('✅ Email enviado exitosamente a:', user.email);
+        } catch (emailError) {
+            console.error('❌ Error al enviar email:', emailError);
+            // Opcional: podrías devolver un error, pero por seguridad es mejor no hacerlo
+        }
 
         res.json({ success: true, message });
 

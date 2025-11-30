@@ -1,20 +1,80 @@
+ion-content {
+  --background: #f5f5f5;
+}
+
+// Estilo de los items
 ion-item {
   --background: white;
   --border-radius: 10px;
   margin-bottom: 15px;
   --padding-start: 15px;
+  --color: #2c3e50;
 
+  // Labels con posición stacked
   ion-label[position="stacked"] {
     font-weight: 600;
-    color: var(--ion-color-dark);
+    color: #2c3e50 !important;
     margin-bottom: 8px;
+    font-size: 14px;
   }
 
-  ion-input, ion-textarea, ion-select {
+  // Labels sin posición
+  ion-label {
+    color: #2c3e50 !important;
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  // Inputs, textareas y selects
+  ion-input,
+  ion-textarea,
+  ion-select {
     --padding-start: 10px;
+    --color: #2c3e50 !important;
+    --placeholder-color: #95a5a6;
+    --placeholder-opacity: 0.7;
+    font-size: 15px;
+    color: #2c3e50 !important;
   }
 }
 
+// Selector de días
+.days-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 15px;
+  background: white;
+  border-radius: 10px;
+  margin-bottom: 15px;
+
+  ion-chip {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    border: 2px solid transparent;
+
+    &[color="primary"] {
+      border-color: var(--ion-color-primary);
+    }
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    ion-label {
+      color: inherit !important;
+      font-size: 13px;
+    }
+  }
+}
+
+// Mensajes de error
 .error-message {
   color: var(--ion-color-danger);
   font-size: 12px;
@@ -23,42 +83,34 @@ ion-item {
   background: rgba(235, 68, 90, 0.1);
   border-radius: 5px;
   display: inline-block;
+  font-weight: 500;
 }
 
-.days-selector {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  padding: 15px;
-
-  ion-chip {
-    --background: var(--ion-color-light);
-    cursor: pointer;
-    transition: all 0.2s;
-
-    &:active {
-      transform: scale(0.95);
-    }
-  }
-}
-
+// Card de vista previa
 .preview-card {
   margin-top: 30px;
   border-radius: 15px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: white;
 
-  ion-card-subtitle {
-    color: var(--ion-color-medium);
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+  ion-card-header {
+    ion-card-subtitle {
+      color: #7f8c8d;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 1px;
+    }
+  }
+
+  ion-card-content {
+    padding: 20px;
   }
 
   .preview-content {
     display: flex;
     align-items: center;
     gap: 15px;
-    padding: 10px 0;
 
     .preview-icon {
       width: 60px;
@@ -67,7 +119,9 @@ ion-item {
       display: flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, var(--ion-color-primary) 0%, var(--ion-color-primary-shade) 100%);
+      box-shadow: 0 4px 12px rgba(var(--ion-color-primary-rgb), 0.3);
+      flex-shrink: 0;
 
       ion-icon {
         font-size: 32px;
@@ -77,30 +131,85 @@ ion-item {
 
     .preview-info {
       flex: 1;
+      min-width: 0;
 
       h3 {
         font-size: 18px;
         font-weight: 600;
         margin: 0 0 5px 0;
-        color: var(--ion-color-dark);
+        color: #2c3e50;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       p {
         font-size: 14px;
-        color: var(--ion-color-medium);
+        color: #7f8c8d;
         margin: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
     }
   }
 }
 
+// Grupo de botones
 .button-group {
   margin-top: 30px;
+  margin-bottom: 20px;
 
   ion-button {
     margin-bottom: 10px;
     font-weight: 600;
     --border-radius: 10px;
     height: 50px;
+    text-transform: none;
+    font-size: 16px;
+
+    &[fill="outline"] {
+      --border-width: 2px;
+    }
+  }
+}
+
+// Ajustes para el spinner
+ion-spinner {
+  margin-right: 8px;
+}
+
+// Responsive
+@media (max-width: 576px) {
+  .preview-card {
+    .preview-content {
+      .preview-icon {
+        width: 50px;
+        height: 50px;
+
+        ion-icon {
+          font-size: 28px;
+        }
+      }
+
+      .preview-info {
+        h3 {
+          font-size: 16px;
+        }
+
+        p {
+          font-size: 13px;
+        }
+      }
+    }
+  }
+
+  .days-selector {
+    padding: 10px;
+    gap: 8px;
+
+    ion-chip {
+      margin: 0;
+    }
   }
 }
