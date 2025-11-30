@@ -340,3 +340,41 @@ exports.addPointsToUser = async (userId, points) => {
         console.error('Error al agregar puntos:', error);
     }
 };
+
+// Obtener ranking de usuarios
+exports.getRanking = async (req, res) => {
+    try {
+        const query = `
+            SELECT
+                u.id as user_id,
+                u.full_name,
+                u.avatar_url,
+                up.total_points,
+                up.level
+            FROM user_points up
+            JOIN users u ON up.user_id = u.id
+            ORDER BY up.total_points DESC
+            LIMIT 10
+        `;
+
+        const [ranking] = await db.query(query);
+
+        // Agregar posición (rank)
+        const rankingWithPosition = ranking.map((user, index) => ({
+            ...user,
+            rank: index + 1
+        }));
+
+        res.json({
+            success: true,
+            data: { ranking: rankingWithPosition }
+        });
+
+    } catch (error) {
+        console.error('Error al obtener ranking:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error en el servidor'
+        });
+    }
+};

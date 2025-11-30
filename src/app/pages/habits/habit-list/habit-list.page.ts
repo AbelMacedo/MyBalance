@@ -44,6 +44,15 @@ export class HabitListPage implements OnInit, OnDestroy {
   subscribeToHabits() {
     this.habitsSubscription = this.habitService.habits$.subscribe(habits => {
       this.habits = habits;
+
+      // Inicializar set de completados hoy
+      const today = new Date().toISOString().split('T')[0];
+      this.completedHabitsToday = new Set(
+        habits
+          .filter(h => h.last_completion_date === today)
+          .map(h => h.id)
+      );
+
       this.applyFilter();
       this.isLoading = false;
     });

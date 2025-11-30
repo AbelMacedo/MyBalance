@@ -244,4 +244,31 @@ export class WellnessService {
   getUserPoints(): UserPoints | null {
     return this.userPointsSubject.value;
   }
+
+  // Ranking
+  private rankingSubject = new BehaviorSubject<any[]>([]);
+  public ranking$ = this.rankingSubject.asObservable();
+
+  async loadRanking(): Promise<void> {
+    try {
+      const request = await this.apiService.get<ApiWellnessResponse<{ ranking: any[] }>>('/challenges/ranking');
+
+      request.subscribe({
+        next: (response) => {
+          if (response.success && response.data) {
+            this.rankingSubject.next(response.data.ranking);
+          }
+        },
+        error: (error) => {
+          console.error('Error al cargar ranking:', error);
+        }
+      });
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+
+  getRanking(): any[] {
+    return this.rankingSubject.value;
+  }
 }

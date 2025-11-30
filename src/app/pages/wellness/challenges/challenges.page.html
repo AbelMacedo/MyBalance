@@ -23,6 +23,9 @@
       <ion-segment-button value="completed">
         <ion-label>Completados</ion-label>
       </ion-segment-button>
+      <ion-segment-button value="ranking">
+        <ion-label>Ranking</ion-label>
+      </ion-segment-button>
     </ion-segment>
   </ion-toolbar>
 </ion-header>
@@ -198,6 +201,33 @@
       <ion-icon name="ribbon-outline" color="medium"></ion-icon>
       <h3>Aún no has completado ningún reto</h3>
       <p>¡Completa tu primer reto y gana puntos!</p>
+    </div>
+  </div>
+
+  <!-- Ranking -->
+  <div *ngIf="selectedTab === 'ranking'" class="challenges-list ion-padding">
+    <h2>Top 10 Mejores Usuarios 🏆</h2>
+
+    <ion-list>
+      <ion-item *ngFor="let user of ranking; let i = index" [lines]="'full'">
+        <ion-label slot="start" class="rank-number">
+          <h1 [class.top-1]="i === 0" [class.top-2]="i === 1" [class.top-3]="i === 2">{{ i + 1 }}</h1>
+        </ion-label>
+        <ion-label>
+          <h2>{{ user.full_name }}</h2>
+          <p>Nivel {{ user.level }}</p>
+        </ion-label>
+        <ion-note slot="end" color="warning">
+          <ion-icon name="star"></ion-icon> {{ user.total_points }} pts
+        </ion-note>
+      </ion-item>
+    </ion-list>
+
+    <!-- Estado vacío -->
+    <div *ngIf="ranking.length === 0 && !isLoading" class="empty-state">
+      <ion-icon name="trophy-outline" color="medium"></ion-icon>
+      <h3>Aún no hay ranking disponible</h3>
+      <p>¡Sé el primero en ganar puntos!</p>
     </div>
   </div>
 

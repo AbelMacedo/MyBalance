@@ -17,7 +17,7 @@ import { WellnessTip, UserChallenge, UserPoints } from 'src/app/core/models/well
   styleUrls: ['./home.page.scss'],
   standalone: false
 })
-export class HomePage implements OnInit, OnDestroy {
+export class HomePage implements OnInit {
   userName: string = 'Usuario';
 
   todayHabitsCompleted = 0;
@@ -48,86 +48,59 @@ export class HomePage implements OnInit, OnDestroy {
     private balanceService: BalanceService,
     private wellnessService: WellnessService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.loadUserName();
-    this.loadDashboardData();
   }
 
-  ngOnDestroy() {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
-  }
-
-  async loadUserName() {
-    const user = await this.authService.getCurrentUser();
-    if (user && user.full_name) {
-      this.userName = user.full_name.split(' ')[0];
-    }
+  loadUserName() {
+    const userSub = this.authService.currentUser$.subscribe(user => {
+      if (user) {
+        this.userName = user.full_name.split(' ')[0];
+      }
+    });
+    this.subscriptions.push(userSub);
   }
 
   async loadDashboardData() {
     this.isLoading = true;
-
     try {
-      await Promise.all([
-        this.loadHabitsData(),
-        this.loadTasksData(),
-        this.loadMoodData(),
-        this.loadBalanceData(),
-        this.loadWellnessData()
-      ]);
+      this.loadUserName();
+      await this.loadHabitStats();
+      await this.loadWeeklyTasksStats();
+      await this.loadMoodData();
+      await this.loadBalanceData();
+      await this.loadWellnessData();
     } catch (error) {
-      console.error('Error al cargar dashboard:', error);
+      console.error('Error loading dashboard data', error);
     } finally {
       this.isLoading = false;
     }
   }
 
-  async loadHabitsData() {
-    await this.habitService.loadHabits();
+  async loadHabitStats() {
+    try {
+      await this.habitService.loadHabits(true);
 
-    const habitsSub = this.habitService.habits$.subscribe(habits => {
-      this.calculateHabitsStats(habits);
-    });
+      const todayHabits = this.habitService.getTodayHabits();
+      this.todayHabitsTotal = todayHabits.length;
 
-    this.subscriptions.push(habitsSub);
+      const today = new Date().toISOString().split('T')[0];
+      this.todayHabitsCompleted = todayHabits.filter(h =>
+        h.last_completion_date && h.last_completion_date.startsWith(today)
+      ).length;
+
+      const allHabits = this.habitService.getHabits();
+      this.maxHabitStreak = allHabits.reduce((max, h) => Math.max(max, h.current_streak || 0), 0);
+    } catch (error) {
+      console.error('Error loading habit stats:', error);
+    }
   }
 
-  calculateHabitsStats(habits: Habit[]) {
-    const today = new Date().toISOString().split('T')[0];
-
-    const todayHabits = habits.filter(h => {
-      if (h.frequency === 'daily') return true;
-      if (h.frequency === 'specific_days') {
-        const dayOfWeek = new Date().getDay().toString();
-        return h.specific_days && h.specific_days.includes(dayOfWeek);
-      }
-      return false;
-    });
-
-    this.todayHabitsTotal = todayHabits.length;
-    this.todayHabitsCompleted = todayHabits.filter(h => h.last_completion_date === today).length;
-    this.maxHabitStreak = Math.max(...habits.map(h => h.current_streak || 0), 0);
+  ionViewWillEnter() {
+    this.loadDashboardData();
   }
-
-  async loadTasksData() {
-    const today = new Date().toISOString().split('T')[0];
-    await this.taskService.loadTasks({ task_date: today });
-
-    const tasksSub = this.taskService.tasks$.subscribe(tasks => {
-      this.calculateTasksStats(tasks);
-    });
-
-    this.subscriptions.push(tasksSub);
-    await this.loadWeeklyTasksStats();
-  }
-
-  calculateTasksStats(tasks: Task[]) {
-    this.todayTasksTotal = tasks.length;
-    this.todayTasksCompleted = tasks.filter(t => t.is_completed).length;
-  }
-
   async loadWeeklyTasksStats() {
     try {
       const today = new Date();
@@ -176,7 +149,8 @@ export class HomePage implements OnInit, OnDestroy {
         next: (response) => {
           if (response.success && response.data) {
             this.weeklyMoodCount = response.data.daily_trend.length;
-            this.weeklyMoodAverage = parseFloat(response.data.average_intensity.toFixed(1));
+            const avg = Number(response.data.average_intensity) || 0;
+            this.weeklyMoodAverage = parseFloat(avg.toFixed(1));
           }
         },
         error: (error) => {

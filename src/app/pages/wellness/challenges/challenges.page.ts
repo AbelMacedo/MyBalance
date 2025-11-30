@@ -24,12 +24,14 @@ export class ChallengesPage implements OnInit, OnDestroy {
   private userChallengesSubscription?: Subscription;
   private pointsSubscription?: Subscription;
 
+  ranking: any[] = [];
+
   constructor(
     private wellnessService: WellnessService,
     private router: Router,
     private alertController: AlertController,
     private toastController: ToastController
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.loadData();
@@ -55,6 +57,10 @@ export class ChallengesPage implements OnInit, OnDestroy {
     this.pointsSubscription = this.wellnessService.userPoints$.subscribe(points => {
       this.userPoints = points || undefined;
     });
+
+    this.wellnessService.ranking$.subscribe(ranking => {
+      this.ranking = ranking;
+    });
   }
 
   async loadData() {
@@ -62,6 +68,7 @@ export class ChallengesPage implements OnInit, OnDestroy {
     await this.wellnessService.loadChallenges();
     await this.wellnessService.loadUserChallenges();
     await this.wellnessService.loadUserPoints();
+    await this.wellnessService.loadRanking();
     this.isLoading = false;
   }
 
@@ -70,6 +77,8 @@ export class ChallengesPage implements OnInit, OnDestroy {
       this.wellnessService.loadUserChallenges(false);
     } else if (this.selectedTab === 'completed') {
       this.wellnessService.loadUserChallenges(true);
+    } else if (this.selectedTab === 'ranking') {
+      this.wellnessService.loadRanking();
     }
   }
 

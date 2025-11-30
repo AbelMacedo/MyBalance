@@ -14,7 +14,7 @@ export class ApiService {
   constructor(
     private http: HttpClient,
     private storageService: StorageService
-  ) {}
+  ) { }
 
   private async getHeaders(): Promise<HttpHeaders> {
     const token = await this.storageService.get('token');

@@ -27,6 +27,22 @@ exports.completeHabit = async (req, res) => {
       });
     }
 
+    // Verificar si ya existe un registro para este hábito y fecha
+    const [existing] = await db.query(
+      'SELECT id FROM habit_completions WHERE habit_id = ? AND user_id = ? AND completion_date = ?',
+      [habit_id, userId, date]
+    );
+
+    if (existing.length > 0) {
+      // Si ya existe y el estado es el mismo, no hacer nada (idempotencia)
+      // Si se quiere permitir actualizar notas/hora, se puede dejar pasar al UPDATE
+      // Pero para evitar "doble conteo" en rachas si la lógica de racha es frágil, mejor retornar éxito aquí.
+      return res.json({
+        success: true,
+        message: 'Hábito ya completado hoy'
+      });
+    }
+
     await db.query(
       `INSERT INTO habit_completions
             (habit_id, user_id, completion_date, completion_time, status, notes)

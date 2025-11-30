@@ -84,6 +84,15 @@ export interface Achievement {
   created_at: string;
 }
 
+export interface UserRanking {
+  user_id: number;
+  full_name: string;
+  avatar_url: string;
+  total_points: number;
+  level: number;
+  rank: number;
+}
+
 export interface UserPoints {
   id: number;
   user_id: number;
