@@ -18,7 +18,7 @@
                             <h2><strong>My Balance</strong></h2>
                         </div>
                         <div class="illustration-area">
-                            <img src="{{ asset('img/meditacion-logo.png') }}" alt="" class="image">
+                            <img src="{{ asset('img/meditacion-logo.jpg') }}" alt="" class="image">
                         </div>
                         <div class="copyright text-center">
                             &copy; 2026 Todos los derechos reservados | Abel Macedo
