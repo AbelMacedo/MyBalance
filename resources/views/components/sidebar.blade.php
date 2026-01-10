@@ -19,7 +19,7 @@
                 <i class="fi fi-sr-home"></i>
                 <span>Inicio</span>
             </a>
-            <a href="" class="menu-item {{ request()->routeIs('') ? 'active' : '' }}">
+            <a href="{{ route('tasks.index') }}" class="menu-item {{ request()->routeIs('tasks.index') ? 'active' : '' }}">
                 <i class="fi fi-sr-task-checklist"></i>
                 <span>Tareas</span>
             </a>
